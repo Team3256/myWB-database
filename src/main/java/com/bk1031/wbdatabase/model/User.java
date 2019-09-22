@@ -1,6 +1,11 @@
 package com.bk1031.wbdatabase.model;
 
-public class Student {
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class User {
 
     private String id;
     private String firstName;
@@ -10,21 +15,12 @@ public class Student {
     private int grade;
     private String role;
     private boolean varsity;
-    private boolean safetyGlasses;
     private String shirtSize;
+    private String jacketSize;
+    private String discordID;
 
-    public Student(String id, String firstName, String lastName, String email, String phone, int grade, String role, boolean varsity, boolean safetyGlasses, String shirtSize) {
-            this.id = id;
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.email = email;
-            this.phone = phone;
-            this.grade = grade;
-            this.role = role;
-            this.varsity = varsity;
-            this.safetyGlasses = safetyGlasses;
-            this.shirtSize = shirtSize;
-    }
+    public List<String> subteamList = new ArrayList<>();
+    public List<String> permList = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -90,20 +86,28 @@ public class Student {
         this.varsity = varsity;
     }
 
-    public boolean isSafetyGlasses() {
-        return safetyGlasses;
-    }
-
-    public void setSafetyGlasses(boolean safetyGlasses) {
-        this.safetyGlasses = safetyGlasses;
-    }
-
     public String getShirtSize() {
         return shirtSize;
     }
 
     public void setShirtSize(String shirtSize) {
         this.shirtSize = shirtSize;
+    }
+
+    public String getJacketSize() {
+        return jacketSize;
+    }
+
+    public void setJacketSize(String jacketSize) {
+        this.jacketSize = jacketSize;
+    }
+
+    public String getDiscordID() {
+        return discordID;
+    }
+
+    public void setDiscordID(String discordID) {
+        this.discordID = discordID;
     }
 
     @Override
@@ -114,10 +118,14 @@ public class Student {
                 "\"lastName\":\"" + lastName + "\"," +
                 "\"email\":\"" + email + "\"," +
                 "\"phone\":\"" + phone + "\"," +
+                "\"grade\":" + grade + "," +
                 "\"role\":\"" + role + "\"," +
+                "\"subteams\":" + subteamList.toString() + "," +
                 "\"varsity\":" + varsity + "," +
-                "\"safetyGlasses\":" + safetyGlasses + "," +
-                "\"shirtSize\":\"" + shirtSize + "\"" +
+                "\"shirtSize\":\"" + shirtSize + "\"," +
+                "\"jacketSize\":\"" + jacketSize + "\"," +
+                "\"discordID\":" + discordID + "," +
+                "\"perms\":" + permList.toString() + "," +
                 "}";
     }
 }

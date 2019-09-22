@@ -1,4 +1,4 @@
-CREATE TABLE STUDENT (
+CREATE TABLE "user" (
     "id" text,
     "first_name" text,
     "last_name" text,
@@ -7,22 +7,28 @@ CREATE TABLE STUDENT (
     "grade" integer,
     "role" text,
     "varsity" boolean,
-    "safety_glasses" boolean,
-    "shirt_size" text
+    "shirt_size" text,
+    "jacket_size" text,
+    "discord_id" text
 );
 
-CREATE TABLE PERMISSION (
+CREATE TABLE "permission" (
     "student_id" text,
     "perm" text
 );
 
-CREATE TABLE ATTENDANCE (
+CREATE TABLE "subteam" (
+    "student_id" text,
+    "subteam" text
+);
+
+CREATE TABLE "attendance" (
     "student_id" text,
     "event_id" text,
     "hours" integer
 );
 
-CREATE TABLE EVENT (
+CREATE TABLE "event" (
      "id" text,
      "date" date,
      "start_time" timestamp,

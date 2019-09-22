@@ -1,16 +1,11 @@
 package com.bk1031.wbdatabase;
 
-import com.bk1031.wbdatabase.controller.StudentController;
+import com.bk1031.wbdatabase.controller.UserController;
 import org.apache.ibatis.jdbc.ScriptRunner;
-import spark.Request;
-import spark.Response;
-import spark.Route;
-import spark.Spark;
-import spark.servlet.SparkApplication;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import static spark.Spark.*;
 import java.io.BufferedReader;
@@ -45,8 +40,9 @@ public class Application {
 					+ "\nERROR: " + e.getMessage());
 		}
 		// Initialize Object Controllers
+		before("/api/", ((request, response) -> System.out.println(request.url())));
 		get("/api/test", (req, res) -> "Hello World");
-		StudentController studentController = new StudentController(db);
+		UserController userController = new UserController(db);
 	}
 
 	public Connection connect() {
