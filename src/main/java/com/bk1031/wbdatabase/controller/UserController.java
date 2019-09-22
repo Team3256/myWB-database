@@ -47,13 +47,13 @@ public class UserController {
                 String subteamSql = "select subteam.subteam from subteam where subteam.student_id='" + user.getId() + "'";
                 ResultSet rs2 = db.createStatement().executeQuery(subteamSql);
                 while (rs2.next()) {
-                    user.subteamList.add(rs2.getString("subteam"));
+                    user.subteams.add(rs2.getString("subteam"));
                 }
                 // Get Permissions for User
                 String permSql = "select perm from permission where permission.student_id='" + user.getId() + "'";
                 ResultSet rs3 = db.createStatement().executeQuery(permSql);
                 while (rs3.next()) {
-                    user.permList.add(rs3.getString("perm"));
+                    user.perms.add(rs3.getString("perm"));
                 }
                 returnList.add(user);
             }
@@ -85,13 +85,13 @@ public class UserController {
                 String subteamSql = "select subteam.subteam from subteam where subteam.student_id='" + user.getId() + "'";
                 ResultSet rs2 = db.createStatement().executeQuery(subteamSql);
                 while (rs2.next()) {
-                    user.subteamList.add(rs2.getString("subteam"));
+                    user.subteams.add(rs2.getString("subteam"));
                 }
                 // Get Permissions for User
                 String permSql = "select perm from permission where permission.student_id='" + user.getId() + "'";
                 ResultSet rs3 = db.createStatement().executeQuery(permSql);
                 while (rs3.next()) {
-                    user.permList.add(rs3.getString("perm"));
+                    user.perms.add(rs3.getString("perm"));
                 }
             }
             rs.close();
@@ -105,7 +105,7 @@ public class UserController {
             res.type("application/json");
             User user = gson.fromJson(req.body(), User.class);
             System.out.println("GIVEN STUDENT: " + user);
-            String sql = "INSERT INTO STUDENT VALUES " +
+            String sql = "INSERT INTO \"user\" VALUES " +
                     "(" +
                     "'" + user.getId() + "'," +
                     "'" + user.getFirstName() + "'," +
@@ -116,8 +116,26 @@ public class UserController {
                     "'" + user.getRole() + "'," +
                     user.isVarsity() + "," +
                     "'" + user.getShirtSize() + "'" +
+                    "'" + user.getJacketSize() + "'" +
+                    "'" + user.getDiscordID() + "'" +
                     ")";
             db.createStatement().executeUpdate(sql);
+            for (String subteam : user.subteams) {
+                sql = "INSERT INTO subteam VALUES " +
+                        "(" +
+                        "'" + user.getId() + "'," +
+                        "'" + subteam + "'" +
+                        ")";
+                db.createStatement().executeUpdate(sql);
+            }
+            for (String perm : user.perms) {
+                sql = "INSERT INTO permission VALUES " +
+                        "(" +
+                        "'" + user.getId() + "'," +
+                        "'" + perm + "'" +
+                        ")";
+                db.createStatement().executeUpdate(sql);
+            }
             db.commit();
             System.out.println("Inserted records into the table...");
             return user.toString();

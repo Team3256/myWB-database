@@ -1,7 +1,5 @@
 package com.bk1031.wbdatabase.model;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +17,8 @@ public class User {
     private String jacketSize;
     private String discordID;
 
-    public List<String> subteamList = new ArrayList<>();
-    public List<String> permList = new ArrayList<>();
+    public List<String> subteams = new ArrayList<>();
+    public List<String> perms = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -120,12 +118,12 @@ public class User {
                 "\"phone\":\"" + phone + "\"," +
                 "\"grade\":" + grade + "," +
                 "\"role\":\"" + role + "\"," +
-                "\"subteams\":" + subteamList.toString() + "," +
+                "\"subteams\":" + subteams.toString() + "," +
                 "\"varsity\":" + varsity + "," +
                 "\"shirtSize\":\"" + shirtSize + "\"," +
                 "\"jacketSize\":\"" + jacketSize + "\"," +
-                "\"discordID\":" + discordID + "," +
-                "\"perms\":" + permList.toString() + "," +
+                "\"discordID\":\"" + discordID + "\"," +
+                "\"perms\":" + perms.toString() + "," +
                 "}";
     }
 }
