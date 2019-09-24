@@ -21,6 +21,9 @@ public class Application {
 		Connection db = app.connect();
 		// Initialize DB
 		String basePath = new File("").getAbsolutePath();
+		if (!basePath.endsWith("/wb-database")) {
+			basePath += "/wb-database";
+		}
 		try {
 			// Initialize object for ScripRunner
 			ScriptRunner sr = new ScriptRunner(db);
