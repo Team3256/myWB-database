@@ -28,13 +28,11 @@ public class Application {
 			Reader reader = new BufferedReader(new FileReader(basePath + Constants.initPath));
 			// Exctute scrpt
 			sr.runScript(reader);
-
 		} catch (Exception e) {
-			System.err.println("Failed to Execute " + Constants.initPath
+			System.err.println("Failed to Execute " + basePath + Constants.initPath
 					+ "\nERROR: " + e.getMessage());
 		}
 		// Initialize Object Controllers
-		before("/api/", ((request, response) -> System.out.println(request.url())));
 		get("/api/test", (req, res) -> "Hello World");
 		UserController userController = new UserController(db);
 	}
@@ -44,6 +42,7 @@ public class Application {
 		try {
 			conn = DriverManager.getConnection(Constants.url, Constants.user, Constants.password);
 			System.out.println("Connected to the PostgreSQL server successfully.");
+			System.out.println(Constants.url);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}

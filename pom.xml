@@ -10,6 +10,7 @@
 	</parent>
 	<groupId>com.bk1031</groupId>
 	<artifactId>wb-database</artifactId>
+	<packaging>jar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>wb-database</name>
 	<description>The database manager that is used for the backend of our myWB apps</description>
