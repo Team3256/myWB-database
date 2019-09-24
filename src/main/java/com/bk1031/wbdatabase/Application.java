@@ -2,7 +2,6 @@ package com.bk1031.wbdatabase;
 
 import com.bk1031.wbdatabase.controller.UserController;
 import org.apache.ibatis.jdbc.ScriptRunner;
-
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,11 +12,6 @@ import java.io.FileReader;
 import java.io.Reader;
 
 public class Application {
-
-	private final String url = "jdbc:postgresql://localhost:5432/WB-Database";
-	private final String user = "postgres";
-	private final String password = "";
-	private final static String initPath = "/src/main/resources/init.sql";
 
 	public static void main(String[] args) throws SQLException {
 		// Start Spark Webserver
@@ -31,12 +25,12 @@ public class Application {
 			// Initialize object for ScripRunner
 			ScriptRunner sr = new ScriptRunner(db);
 			// Give the input file to Reader
-			Reader reader = new BufferedReader(new FileReader(basePath + initPath));
+			Reader reader = new BufferedReader(new FileReader(basePath + Constants.initPath));
 			// Exctute scrpt
 			sr.runScript(reader);
 
 		} catch (Exception e) {
-			System.err.println("Failed to Execute " + initPath
+			System.err.println("Failed to Execute " + Constants.initPath
 					+ "\nERROR: " + e.getMessage());
 		}
 		// Initialize Object Controllers
@@ -48,7 +42,7 @@ public class Application {
 	public Connection connect() {
 		Connection conn = null;
 		try {
-			conn = DriverManager.getConnection(url, user, password);
+			conn = DriverManager.getConnection(Constants.url, Constants.user, Constants.password);
 			System.out.println("Connected to the PostgreSQL server successfully.");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());

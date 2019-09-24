@@ -58,6 +58,9 @@ public class UserController {
                 returnList.add(user);
             }
             rs.close();
+            String noob = "noob";
+            noob += " gamer";
+            System.out.println(noob);
             System.out.println(returnList);
             return returnList;
         });
