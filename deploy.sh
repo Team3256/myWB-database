@@ -10,4 +10,4 @@ echo "Deploying to mywb.vcs.net"
 scp ./target/wb-database-0.0.1-SNAPSHOT.jar supadmin@mywb.vcs.net:~/database.jar
 echo "Deployment complete"
 echo "Restarting server"
-ssh supadmin@mywb.vcs.net 'wbdatabase restart'
+ssh supadmin@mywb.vcs.net 'source ./wb_commands.sh; wbdatabase restart'
