@@ -25,7 +25,6 @@ public class UserController {
 
     private void getAllUsers() {
         get("/api/users", (req, res) -> {
-            res.type("application/json");
             List<User> returnList = new ArrayList<>();
             // Get Users
             String sql = "SELECT * FROM \"user\"";
@@ -58,17 +57,14 @@ public class UserController {
                 returnList.add(user);
             }
             rs.close();
-            String noob = "noob";
-            noob += " gamer";
-            System.out.println(noob);
-            System.out.println(returnList);
-            return returnList;
+            res.type("application/json");
+            res.body(returnList.toString());
+            return res;
         });
     }
 
     private void getUser() {
         get("/api/users/:id", (req, res) -> {
-            res.type("application/json");
             User user = new User();
             String sql = "SELECT * FROM \"user\" WHERE id='" + req.params(":id") + "'";
             ResultSet rs = db.createStatement().executeQuery(sql);
@@ -98,16 +94,28 @@ public class UserController {
                 }
             }
             rs.close();
-            System.out.println(user);
-            return user.toString();
+            if (user.toString().contains("null")) {
+                res.status(404);
+                res.type("application/json");
+                res.body("{\"message\": \"Requested user not found\"}");
+                return res;
+            }
+            res.type("application/json");
+            res.body(user.toString());
+            return res;
         });
     }
 
     private void createUser() {
         post("/api/users", (req, res) -> {
-            res.type("application/json");
             User user = gson.fromJson(req.body(), User.class);
-            System.out.println("GIVEN STUDENT: " + user);
+            System.out.println("PARSED STUDENT: " + user);
+            if (user.toString().contains("null")) {
+                res.status(400);
+                res.type("application/json");
+                res.body("{\"message\": \"Request missing or contains null values\"}");
+                return res;
+            }
             String sql = "INSERT INTO \"user\" VALUES " +
                     "(" +
                     "'" + user.getId() + "'," +
@@ -118,8 +126,8 @@ public class UserController {
                     user.getGrade() + "," +
                     "'" + user.getRole() + "'," +
                     user.isVarsity() + "," +
-                    "'" + user.getShirtSize() + "'" +
-                    "'" + user.getJacketSize() + "'" +
+                    "'" + user.getShirtSize() + "'," +
+                    "'" + user.getJacketSize() + "'," +
                     "'" + user.getDiscordID() + "'" +
                     ")";
             db.createStatement().executeUpdate(sql);
@@ -141,7 +149,9 @@ public class UserController {
             }
             db.commit();
             System.out.println("Inserted records into the table...");
-            return user.toString();
+            res.type("application/json");
+            res.body(user.toString());
+            return res;
         });
     }
 

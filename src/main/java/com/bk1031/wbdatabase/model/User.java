@@ -108,6 +108,30 @@ public class User {
         this.discordID = discordID;
     }
 
+    public String getPerms() {
+        String returnString = "[";
+        for (String perm: perms) {
+            returnString += "\"" + perm + "\"";
+            if (perms.indexOf(perm) < perms.size() - 1) {
+                returnString += ",";
+            }
+        }
+        returnString += "]";
+        return returnString;
+    }
+
+    public String getSubteams() {
+        String returnString = "[";
+        for (String subteam: subteams) {
+            returnString += "\"" + subteam + "\"";
+            if (subteams.indexOf(subteam) < subteams.size() - 1) {
+                returnString += ",";
+            }
+        }
+        returnString += "]";
+        return returnString;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -118,12 +142,12 @@ public class User {
                 "\"phone\":\"" + phone + "\"," +
                 "\"grade\":" + grade + "," +
                 "\"role\":\"" + role + "\"," +
-                "\"subteams\":" + subteams.toString() + "," +
                 "\"varsity\":" + varsity + "," +
                 "\"shirtSize\":\"" + shirtSize + "\"," +
                 "\"jacketSize\":\"" + jacketSize + "\"," +
                 "\"discordID\":\"" + discordID + "\"," +
-                "\"perms\":" + perms.toString() + "," +
+                "\"perms\":" + getPerms() + "," +
+                "\"subteams\":" + getSubteams() +
                 "}";
     }
 }

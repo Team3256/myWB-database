@@ -2,6 +2,8 @@ package com.bk1031.wbdatabase;
 
 import com.bk1031.wbdatabase.controller.UserController;
 import org.apache.ibatis.jdbc.ScriptRunner;
+import spark.Spark;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,6 +12,7 @@ import static spark.Spark.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.Reader;
+import java.util.Date;
 
 public class Application {
 
@@ -35,6 +38,20 @@ public class Application {
 			System.err.println("Failed to Execute " + basePath + Constants.initPath
 					+ "\nERROR: " + e.getMessage());
 		}
+		// Check authentication
+		before((request, response) -> {
+			// TODO: Check for authentication
+			Date date = new Date();
+			System.out.println(date);
+			System.out.println("REQUESTED ROUTE: " + request.url());
+			System.out.println("REQUEST BODY: " + request.body());
+		});
+		// Initialize request logging
+		after((request, response) -> {
+			System.out.println("RESPONSE CODE: " + response.status());
+			System.out.println("RESPONSE BODY: " + response.body());
+			System.out.println();
+		});
 		// Initialize Object Controllers
 		get("/api/test", (req, res) -> "Hello World");
 		UserController userController = new UserController(db);
