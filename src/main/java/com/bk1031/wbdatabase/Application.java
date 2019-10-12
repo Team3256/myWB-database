@@ -41,8 +41,7 @@ public class Application {
 		// Check authentication
 		before((request, response) -> {
 			// TODO: Check for authentication
-			Date date = new Date();
-			System.out.println(date);
+			System.out.println(new Date());
 			System.out.println("REQUESTED ROUTE: " + request.url());
 			System.out.println("REQUEST BODY: " + request.body());
 		});
@@ -53,7 +52,11 @@ public class Application {
 			System.out.println();
 		});
 		// Initialize Object Controllers
-		get("/api/test", (req, res) -> "Hello World");
+		get("/api/test", (req, res) -> {
+			res.type("application/json");
+			res.body("{\"message\": \"Hello World!\"}");
+			return res;
+		});
 		UserController userController = new UserController(db);
 	}
 

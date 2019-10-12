@@ -21,6 +21,7 @@ public class UserController {
         getAllUsers();
         getUser();
         createUser();
+        updateUser();
     }
 
     private void getAllUsers() {
@@ -43,13 +44,13 @@ public class UserController {
                 user.setJacketSize(rs.getString("jacket_size"));
                 user.setDiscordID(rs.getString("discord_id"));
                 // Get Subteams for User
-                String subteamSql = "select subteam.subteam from subteam where subteam.student_id='" + user.getId() + "'";
+                String subteamSql = "select subteam.subteam from subteam where subteam.user_id='" + user.getId() + "'";
                 ResultSet rs2 = db.createStatement().executeQuery(subteamSql);
                 while (rs2.next()) {
                     user.subteams.add(rs2.getString("subteam"));
                 }
                 // Get Permissions for User
-                String permSql = "select perm from permission where permission.student_id='" + user.getId() + "'";
+                String permSql = "select perm from permission where permission.user_id='" + user.getId() + "'";
                 ResultSet rs3 = db.createStatement().executeQuery(permSql);
                 while (rs3.next()) {
                     user.perms.add(rs3.getString("perm"));
@@ -81,13 +82,13 @@ public class UserController {
                 user.setJacketSize(rs.getString("jacket_size"));
                 user.setDiscordID(rs.getString("discord_id"));
                 // Get Subteams for User
-                String subteamSql = "select subteam.subteam from subteam where subteam.student_id='" + user.getId() + "'";
+                String subteamSql = "select subteam.subteam from subteam where subteam.user_id='" + user.getId() + "'";
                 ResultSet rs2 = db.createStatement().executeQuery(subteamSql);
                 while (rs2.next()) {
                     user.subteams.add(rs2.getString("subteam"));
                 }
                 // Get Permissions for User
-                String permSql = "select perm from permission where permission.student_id='" + user.getId() + "'";
+                String permSql = "select perm from permission where permission.user_id='" + user.getId() + "'";
                 ResultSet rs3 = db.createStatement().executeQuery(permSql);
                 while (rs3.next()) {
                     user.perms.add(rs3.getString("perm"));
@@ -116,6 +117,16 @@ public class UserController {
                 res.body("{\"message\": \"Request missing or contains null values\"}");
                 return res;
             }
+            String existsSql = "SELECT COUNT(1) FROM \"user\" WHERE id = '" + user.getId() + "'";
+            ResultSet rs = db.createStatement().executeQuery(existsSql);
+            while (rs.next()) {
+                if (rs.getInt("count") == 1) {
+                    res.status(409);
+                    res.type("application/json");
+                    res.body("{\"message\": \"User already exists with id: " + user.getId() + "\"}");
+                    return res;
+                }
+            }
             String sql = "INSERT INTO \"user\" VALUES " +
                     "(" +
                     "'" + user.getId() + "'," +
@@ -130,6 +141,69 @@ public class UserController {
                     "'" + user.getJacketSize() + "'," +
                     "'" + user.getDiscordID() + "'" +
                     ")";
+            db.createStatement().executeUpdate(sql);
+            for (String subteam : user.subteams) {
+                sql = "INSERT INTO subteam VALUES " +
+                        "(" +
+                        "'" + user.getId() + "'," +
+                        "'" + subteam + "'" +
+                        ")";
+                db.createStatement().executeUpdate(sql);
+            }
+            for (String perm : user.perms) {
+                sql = "INSERT INTO permission VALUES " +
+                        "(" +
+                        "'" + user.getId() + "'," +
+                        "'" + perm + "'" +
+                        ")";
+                db.createStatement().executeUpdate(sql);
+            }
+            db.commit();
+            System.out.println("Inserted records into the table...");
+            res.type("application/json");
+            res.body(user.toString());
+            return res;
+        });
+    }
+
+    private void updateUser() {
+        put("/api/users", (req, res) -> {
+            User user = gson.fromJson(req.body(), User.class);
+            System.out.println("PARSED STUDENT: " + user);
+            if (user.toString().contains("null")) {
+                res.status(400);
+                res.type("application/json");
+                res.body("{\"message\": \"Request missing or contains null values\"}");
+                return res;
+            }
+            String existsSql = "SELECT COUNT(1) FROM \"user\" WHERE id = '" + user.getId() + "'";
+            ResultSet rs = db.createStatement().executeQuery(existsSql);
+            while (rs.next()) {
+                if (rs.getInt("count") != 1) {
+                    res.status(400);
+                    res.type("application/json");
+                    res.body("{\"message\": \"No mapping for given id: " + user.getId() + "\"}");
+                    return res;
+                }
+            }
+            String sql = "UPDATE \"user\" SET " +
+                    "first_name='" + user.getFirstName() + "'," +
+                    "last_name='" + user.getLastName() + "'," +
+                    "email='" + user.getEmail() + "'," +
+                    "phone='" + user.getPhone() + "'," +
+                    "grade=" + user.getGrade() + "," +
+                    "role='" + user.getRole() + "'," +
+                    "varsity=" + user.isVarsity() + "," +
+                    "shirt_size='" + user.getShirtSize() + "'," +
+                    "jacket_size='" + user.getJacketSize() + "'," +
+                    "discord_id='" + user.getDiscordID() + "' " +
+                    "WHERE id='" + user.getId() + "'";
+            db.createStatement().executeUpdate(sql);
+            // Clear existing subteam list
+            sql = "DELETE FROM \"subteam\" WHERE user_id='" + user.getId() + "'";
+            db.createStatement().executeUpdate(sql);
+            // Clear existing perms list
+            sql = "DELETE FROM \"permission\" WHERE user_id='" + user.getId() + "'";
             db.createStatement().executeUpdate(sql);
             for (String subteam : user.subteams) {
                 sql = "INSERT INTO subteam VALUES " +

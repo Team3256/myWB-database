@@ -13,17 +13,17 @@ CREATE TABLE "user" (
 );
 
 CREATE TABLE "permission" (
-    "student_id" text,
+    "user_id" text,
     "perm" text
 );
 
 CREATE TABLE "subteam" (
-    "student_id" text,
+    "user_id" text,
     "subteam" text
 );
 
 CREATE TABLE "attendance" (
-    "student_id" text,
+    "user_id" text,
     "event_id" text,
     "hours" integer
 );
