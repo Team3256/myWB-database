@@ -1,5 +1,6 @@
 package com.bk1031.wbdatabase;
 
+import com.bk1031.wbdatabase.controller.EventController;
 import com.bk1031.wbdatabase.controller.UserController;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import spark.Spark;
@@ -58,6 +59,7 @@ public class Application {
 			return res;
 		});
 		UserController userController = new UserController(db);
+		EventController eventController = new EventController(db);
 	}
 
 	public Connection connect() {

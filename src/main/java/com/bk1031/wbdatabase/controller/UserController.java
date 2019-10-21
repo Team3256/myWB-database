@@ -167,8 +167,9 @@ public class UserController {
     }
 
     private void updateUser() {
-        put("/api/users", (req, res) -> {
+        put("/api/users/:id", (req, res) -> {
             User user = gson.fromJson(req.body(), User.class);
+            user.setId(req.params(":id"));
             System.out.println("PARSED STUDENT: " + user);
             if (user.toString().contains("null")) {
                 res.status(400);
