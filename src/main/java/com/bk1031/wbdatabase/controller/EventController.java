@@ -34,7 +34,11 @@ public class EventController {
                 event.setStartTime(rs.getTimestamp("start_time"));
                 event.setEndTime(rs.getTimestamp("end_time"));
                 event.setType(rs.getString("type"));
+                event.setName(rs.getString("name"));
                 event.setDesc(rs.getString("desc"));
+                event.setLatitude(rs.getDouble("latitude"));
+                event.setLongitude(rs.getDouble("longitude"));
+                event.setRadius(rs.getInt("radius"));
                 returnList.add(event);
             }
             rs.close();

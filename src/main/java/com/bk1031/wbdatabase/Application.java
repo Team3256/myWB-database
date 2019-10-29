@@ -8,6 +8,7 @@ import spark.Spark;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import static spark.Spark.*;
 import java.io.BufferedReader;
@@ -23,23 +24,25 @@ public class Application {
         // Connect to Postgres DB
 		Application app = new Application();
 		Connection db = app.connect();
+		db.setAutoCommit(true);
 		// Initialize DB
-		String basePath = new File("").getAbsolutePath();
-		if (!basePath.endsWith("/wb-database")) {
-			basePath += "/wb-database";
-		}
-		try {
-			// Initialize object for ScripRunner
-			ScriptRunner sr = new ScriptRunner(db);
-			// Give the input file to Reader
-			Reader reader = new BufferedReader(new FileReader(basePath + Constants.initPath));
-			// Exctute scrpt
-			sr.runScript(reader);
-		} catch (Exception e) {
-			System.err.println("Failed to Execute " + basePath + Constants.initPath
-					+ "\nERROR: " + e.getMessage());
-		}
-		// Check authentication
+		Migration.v1(db);
+//		String basePath = new File("").getAbsolutePath();
+//		if (!basePath.endsWith("/wb-database")) {
+//			basePath += "/wb-database";
+//		}
+//		try {
+//			// Initialize object for ScripRunner
+//			ScriptRunner sr = new ScriptRunner(db);
+//			// Give the input file to Reader
+//			Reader reader = new BufferedReader(new FileReader(basePath + Constants.initPath));
+//			// Exctute scrpt
+//			sr.runScript(reader);
+//		} catch (Exception e) {
+//			System.err.println("Failed to Execute " + basePath + Constants.initPath
+//					+ "\nERROR: " + e.getMessage());
+//		}
+		// Check authentication and log
 		before((request, response) -> {
 			// TODO: Check for authentication
 			System.out.println(new Date());

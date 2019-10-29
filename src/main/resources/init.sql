@@ -25,7 +25,8 @@ CREATE TABLE "subteam" (
 CREATE TABLE "attendance" (
     "user_id" text,
     "event_id" text,
-    "hours" integer
+    "check_in" timestamp,
+    "check_out" timestamp
 );
 
 CREATE TABLE "event" (
@@ -34,5 +35,9 @@ CREATE TABLE "event" (
      "start_time" timestamp,
      "end_time" timestamp,
      "type" text,
-     "desc" text
+     "name" text,
+     "desc" text,
+     "lat" float,
+     "long" float,
+     "radius" integer
 );

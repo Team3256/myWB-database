@@ -12,7 +12,11 @@ public class Event {
     private Timestamp startTime;
     private Timestamp endTime;
     private String type;
+    private String name;
     private String desc;
+    private double latitude;
+    private double longitude;
+    private int radius;
 
     public List<Attendance> attendance = new ArrayList<>();
 
@@ -56,12 +60,44 @@ public class Event {
         this.type = type;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDesc() {
         return desc;
     }
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
     }
 
     @Override
@@ -72,7 +108,11 @@ public class Event {
                 "\"startTime\":\"" + startTime + "\"," +
                 "\"endTime\":\"" + endTime + "\"," +
                 "\"type\":\"" + type + "\"," +
+                "\"name\":\"" + name + "\"," +
                 "\"desc\":\"" + desc + "\"," +
+                "\"latitude\":" + latitude + "," +
+                "\"longitude\":" + longitude + "," +
+                "\"radius\":" + radius + "," +
                 "\"attendance\":" + attendance +
                 "}";
     }
