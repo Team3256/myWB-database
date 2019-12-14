@@ -43,6 +43,7 @@ public class UserController {
                 user.setShirtSize(rs.getString("shirt_size"));
                 user.setJacketSize(rs.getString("jacket_size"));
                 user.setDiscordID(rs.getString("discord_id"));
+                user.setDiscordAuthToken(rs.getString("discord_auth_token"));
                 // Get Subteams for User
                 String subteamSql = "select subteam.subteam from subteam where subteam.user_id='" + user.getId() + "'";
                 ResultSet rs2 = db.createStatement().executeQuery(subteamSql);
@@ -81,6 +82,7 @@ public class UserController {
                 user.setShirtSize(rs.getString("shirt_size"));
                 user.setJacketSize(rs.getString("jacket_size"));
                 user.setDiscordID(rs.getString("discord_id"));
+                user.setDiscordAuthToken(rs.getString("discord_auth_token"));
                 // Get Subteams for User
                 String subteamSql = "select subteam.subteam from subteam where subteam.user_id='" + user.getId() + "'";
                 ResultSet rs2 = db.createStatement().executeQuery(subteamSql);
@@ -139,7 +141,8 @@ public class UserController {
                     user.isVarsity() + "," +
                     "'" + user.getShirtSize() + "'," +
                     "'" + user.getJacketSize() + "'," +
-                    "'" + user.getDiscordID() + "'" +
+                    "'" + user.getDiscordID() + "'," +
+                    "'" + user.getDiscordAuthToken() + "'" +
                     ")";
             db.createStatement().executeUpdate(sql);
             for (String subteam : user.subteams) {
@@ -197,7 +200,8 @@ public class UserController {
                     "varsity=" + user.isVarsity() + "," +
                     "shirt_size='" + user.getShirtSize() + "'," +
                     "jacket_size='" + user.getJacketSize() + "'," +
-                    "discord_id='" + user.getDiscordID() + "' " +
+                    "discord_id='" + user.getDiscordID() + "'," +
+                    "discord_auth_token='" + user.getDiscordAuthToken() + "' " +
                     "WHERE id='" + user.getId() + "'";
             db.createStatement().executeUpdate(sql);
             // Clear existing subteam list

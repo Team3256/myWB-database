@@ -16,6 +16,7 @@ public class User {
     private String shirtSize;
     private String jacketSize;
     private String discordID;
+    private String discordAuthToken;
 
     public List<String> subteams = new ArrayList<>();
     public List<String> perms = new ArrayList<>();
@@ -108,6 +109,14 @@ public class User {
         this.discordID = discordID;
     }
 
+    public String getDiscordAuthToken() {
+        return discordAuthToken;
+    }
+
+    public void setDiscordAuthToken(String discordAuthToken) {
+        this.discordAuthToken = discordAuthToken;
+    }
+
     public String getPerms() {
         String returnString = "[";
         for (String perm: perms) {
@@ -146,6 +155,7 @@ public class User {
                 "\"shirtSize\":\"" + shirtSize + "\"," +
                 "\"jacketSize\":\"" + jacketSize + "\"," +
                 "\"discordID\":\"" + discordID + "\"," +
+                "\"discordAuthToken\":\"" + discordAuthToken + "\"," +
                 "\"perms\":" + getPerms() + "," +
                 "\"subteams\":" + getSubteams() +
                 "}";

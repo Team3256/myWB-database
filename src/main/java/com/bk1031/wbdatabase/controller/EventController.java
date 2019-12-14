@@ -1,5 +1,6 @@
 package com.bk1031.wbdatabase.controller;
 
+import com.bk1031.wbdatabase.model.Attendance;
 import com.bk1031.wbdatabase.model.Event;
 import com.google.gson.Gson;
 
@@ -19,6 +20,7 @@ public class EventController {
     public EventController(Connection db) {
         this.db = db;
         getAllEvents();
+        getEvent();
     }
 
     private void getAllEvents() {
@@ -48,4 +50,34 @@ public class EventController {
         });
     }
 
+    private void getEvent() {
+        get("/api/events/:id", (request, response) -> {
+            // Get Event
+            Event event = new Event();
+            String sql = "SELECT * FROM \"event\" WHERE id='" + request.params(":id") + "'";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                event.setId(rs.getString("id"));
+                event.setDate(rs.getDate("date"));
+                event.setStartTime(rs.getTimestamp("start_time"));
+                event.setEndTime(rs.getTimestamp("end_time"));
+                event.setType(rs.getString("type"));
+                event.setName(rs.getString("name"));
+                event.setDesc(rs.getString("desc"));
+                event.setLatitude(rs.getDouble("latitude"));
+                event.setLongitude(rs.getDouble("longitude"));
+                event.setRadius(rs.getInt("radius"));
+            }
+            rs.close();
+            if (event.toString().contains("null")) {
+                response.status(404);
+                response.type("application/json");
+                response.body("{\"message\": \"Requested event not found\"}");
+                return response;
+            }
+            response.type("application/json");
+            response.body(event.toString());
+            return response;
+        });
+    }
 }

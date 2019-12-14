@@ -18,8 +18,6 @@ public class Event {
     private double longitude;
     private int radius;
 
-    public List<Attendance> attendance = new ArrayList<>();
-
     public String getId() {
         return id;
     }
@@ -112,8 +110,7 @@ public class Event {
                 "\"desc\":\"" + desc + "\"," +
                 "\"latitude\":" + latitude + "," +
                 "\"longitude\":" + longitude + "," +
-                "\"radius\":" + radius + "," +
-                "\"attendance\":" + attendance +
+                "\"radius\":" + radius +
                 "}";
     }
 }
