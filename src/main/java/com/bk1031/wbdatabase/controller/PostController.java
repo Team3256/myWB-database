@@ -11,11 +11,6 @@ import java.util.ArrayList;
 import static spark.Spark.get;
 
 public class PostController {
-    private String id;
-    private String title;
-    private Timestamp date;
-    private String body;
-
     private Connection db;
 
     Gson gson = new Gson();
@@ -24,38 +19,6 @@ public class PostController {
         this.db = db;
         getAllPosts();
         getPost();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Timestamp getDate() {
-        return date;
-    }
-
-    public void setDate(Timestamp date) {
-        this.date = date;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
     }
 
     private void getAllPosts(){
@@ -100,14 +63,5 @@ public class PostController {
             return response;
         });
     }
-
-    @Override
-    public String toString(){
-        return "{" +
-                "\"id\":\"" + id + "\"," +
-                "\"title\":\"" + title + "\"," +
-                "\"date\":\"" + date + "\"," +
-                "\"body\":\"" + body + "\"" +
-                "}";
     }
 }
