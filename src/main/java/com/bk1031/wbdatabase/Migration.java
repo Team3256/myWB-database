@@ -146,7 +146,7 @@ public class Migration {
                     sql = "CREATE TABLE \"post\" (\n" +
                             "     \"id\" text,\n" +
                             "     \"title\" text,\n" +
-                            "     \"date\" date,\n" +
+                            "     \"date\" timestamp,\n" +
                             "     \"body\" text\n" +
                             ");";
                     db.createStatement().execute(sql);
