@@ -90,10 +90,10 @@ public class Application {
 		Connection conn = null;
 		try {
 			Properties props = new Properties();
-			props.setProperty("user", Constants.user);
-			props.setProperty("password", Constants.password);
+			props.setProperty("user", Constants.USER);
+			props.setProperty("password", Constants.PASSWORD);
 			props.setProperty("autosave", "always");
-			conn = DriverManager.getConnection(Constants.url, props);
+			conn = DriverManager.getConnection(Constants.URL, props);
 			System.out.println("Connected to the PostgreSQL server successfully.");
 			System.out.println(Constants.url);
 		} catch (SQLException e) {
