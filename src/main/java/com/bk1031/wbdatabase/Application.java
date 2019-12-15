@@ -95,7 +95,7 @@ public class Application {
 			props.setProperty("autosave", "always");
 			conn = DriverManager.getConnection(Constants.URL, props);
 			System.out.println("Connected to the PostgreSQL server successfully.");
-			System.out.println(Constants.url);
+			System.out.println(Constants.URL);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
