@@ -2,6 +2,7 @@ package com.bk1031.wbdatabase;
 
 import com.bk1031.wbdatabase.controller.AttendanceController;
 import com.bk1031.wbdatabase.controller.EventController;
+import com.bk1031.wbdatabase.controller.PostController;
 import com.bk1031.wbdatabase.controller.UserController;
 import java.io.File;
 import java.sql.Connection;
@@ -84,6 +85,7 @@ public class Application {
 		UserController userController = new UserController(db);
 		EventController eventController = new EventController(db);
 		AttendanceController attendanceController = new AttendanceController(db);
+		PostController postController = new PostController(db);
 	}
 
 	public Connection connect() {

@@ -21,10 +21,10 @@ public class PostController {
         getPost();
     }
 
-    private void getAllPosts(){
+    private void getAllPosts() {
         get("/api/posts", (request, response) -> {
             ArrayList<Post> returnList = new ArrayList<>();
-            String sql = "SELECT * FROM \"posts\"";
+            String sql = "SELECT * FROM \"post\"";
             ResultSet rs = db.createStatement().executeQuery(sql);
             while(rs.next()){
                 Post post = new Post();
@@ -39,11 +39,11 @@ public class PostController {
         });
     }
 
-    private void getPost(){
-        get("/api/posts", (request, response) -> {
+    private void getPost() {
+        get("/api/posts/:id", (request, response) -> {
             // Get post
             Post post = new Post();
-            String sql = "SELECT * FROM \"posts\" WHERE id='" + request.params(":id") + "'";
+            String sql = "SELECT * FROM \"post\" WHERE id='" + request.params(":id") + "'";
             ResultSet rs = db.createStatement().executeQuery(sql);
             while (rs.next()) {
                 post.setId(rs.getString("id"));
@@ -62,6 +62,5 @@ public class PostController {
             response.body(post.toString());
             return response;
         });
-    }
     }
 }
