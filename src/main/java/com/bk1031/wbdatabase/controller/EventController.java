@@ -153,7 +153,7 @@ public class EventController {
                     "end_time='" + event.getEndTime() + "'," +
                     "type='" + event.getType() + "'," +
                     "name='" + event.getName() + "'," +
-                    "desc='" + event.getDesc() + "'," +
+                    "\"desc\"='" + event.getDesc() + "'," +
                     "latitude=" + event.getLatitude() + "," +
                     "longitude=" + event.getLongitude() + "," +
                     "radius=" + event.getRadius() + " " +
