@@ -9,6 +9,7 @@ public class Attendance {
     private String checkOut;
     private String status;
     private double hours;
+    private String type;
 
     public String getUserID() {
         return userID;
@@ -58,6 +59,14 @@ public class Attendance {
         this.hours = hours;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -66,7 +75,8 @@ public class Attendance {
                 "\"checkIn\":\"" + checkIn + "\"," +
                 "\"checkOut\":\"" + checkOut + "\"," +
                 "\"status\":\"" + status + "\"," +
-                "\"hours\":" + hours +
+                "\"hours\":" + hours + "," +
+                "\"type\":\"" + type + "\"" +
                 "}";
     }
 }

@@ -48,6 +48,16 @@ public class AttendanceController {
                 attendance.setCheckIn(rs2.getTimestamp("check_in").toString());
                 attendance.setCheckOut(rs2.getTimestamp("check_out").toString());
                 attendance.setStatus(rs2.getString("status"));
+                Timestamp t1 = rs2.getTimestamp("check_in");
+                Timestamp t2 = rs2.getTimestamp("check_out");
+                double milliseconds = t2.getTime() - t1.getTime();
+                attendance.setHours(milliseconds / 3600000);
+                // Get type for event
+                String typeSql = "SELECT type FROM \"event\" WHERE id='" + attendance.getEventID()+ "'";
+                ResultSet rs3 = db.createStatement().executeQuery(typeSql);
+                while (rs3.next()) {
+                    attendance.setType(rs3.getString("type"));
+                }
                 returnList.add(attendance);
             }
             response.type("application/json");
@@ -84,6 +94,12 @@ public class AttendanceController {
                 Timestamp t2 = rs2.getTimestamp("check_out");
                 double milliseconds = t2.getTime() - t1.getTime();
                 attendance.setHours(milliseconds / 3600000);
+                // Get type for event
+                String typeSql = "SELECT type FROM \"event\" WHERE id='" + attendance.getEventID()+ "'";
+                ResultSet rs3 = db.createStatement().executeQuery(typeSql);
+                while (rs3.next()) {
+                    attendance.setType(rs3.getString("type"));
+                }
                 returnList.add(attendance);
             }
             response.type("application/json");
@@ -96,6 +112,7 @@ public class AttendanceController {
         post("/api/events/:id/attendance", (request, response) -> {
             Attendance attendance = gson.fromJson(request.body(), Attendance.class);
             attendance.setEventID(request.params(":id"));
+            attendance.setType("");
             System.out.println("PARSED ATTENDANCE: " + attendance);
             if (attendance.toString().contains("null")) {
                 response.status(400);
@@ -112,6 +129,14 @@ public class AttendanceController {
                     response.type("application/json");
                     response.body("{\"message\": \"Requested event not found\"}");
                     return response;
+                }
+                else {
+                    // Get type for event
+                    String typeSql = "SELECT type FROM \"event\" WHERE id='" + attendance.getEventID()+ "'";
+                    ResultSet rs3 = db.createStatement().executeQuery(typeSql);
+                    while (rs3.next()) {
+                        attendance.setType(rs3.getString("type"));
+                    }
                 }
             }
             // Check if entry aleady exists for given event and user
