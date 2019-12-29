@@ -1,13 +1,13 @@
 package com.bk1031.wbdatabase.model;
 
-import java.sql.Timestamp;
 
 public class Attendance {
 
     private String userID;
     private String eventID;
-    private Timestamp checkIn;
-    private Timestamp checkOut;
+    private String checkIn;
+    private String checkOut;
+    private String status;
     private double hours;
 
     public String getUserID() {
@@ -26,20 +26,28 @@ public class Attendance {
         this.eventID = eventID;
     }
 
-    public Timestamp getCheckIn() {
+    public String getCheckIn() {
         return checkIn;
     }
 
-    public void setCheckIn(Timestamp checkIn) {
+    public void setCheckIn(String checkIn) {
         this.checkIn = checkIn;
     }
 
-    public Timestamp getCheckOut() {
+    public String getCheckOut() {
         return checkOut;
     }
 
-    public void setCheckOut(Timestamp checkOut) {
+    public void setCheckOut(String checkOut) {
         this.checkOut = checkOut;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public double getHours() {
@@ -53,10 +61,11 @@ public class Attendance {
     @Override
     public String toString() {
         return "{" +
-                "\"user_id\":\"" + userID + "\"," +
-                "\"event_id\":\"" + eventID + "\"," +
-                "\"check_in\":\"" + checkIn + "\"," +
-                "\"check_out\":\"" + checkOut + "\"," +
+                "\"userID\":\"" + userID + "\"," +
+                "\"eventID\":\"" + eventID + "\"," +
+                "\"checkIn\":\"" + checkIn + "\"," +
+                "\"checkOut\":\"" + checkOut + "\"," +
+                "\"status\":\"" + status + "\"," +
                 "\"hours\":" + hours +
                 "}";
     }

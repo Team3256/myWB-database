@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import static spark.Spark.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +21,7 @@ public class AttendanceController {
         this.db = db;
         getAttendanceForUser();
         getAttendanceForEvent();
+        createAttendance();
     }
 
     private void getAttendanceForUser() {
@@ -43,8 +45,9 @@ public class AttendanceController {
                 Attendance attendance = new Attendance();
                 attendance.setUserID(rs2.getString("user_id"));
                 attendance.setEventID(rs2.getString("event_id"));
-                attendance.setCheckIn(rs2.getTimestamp("check_in"));
-                attendance.setCheckOut(rs2.getTimestamp("check_out"));
+                attendance.setCheckIn(rs2.getTimestamp("check_in").toString());
+                attendance.setCheckOut(rs2.getTimestamp("check_out").toString());
+                attendance.setStatus(rs2.getString("status"));
                 returnList.add(attendance);
             }
             response.type("application/json");
@@ -74,12 +77,81 @@ public class AttendanceController {
                 Attendance attendance = new Attendance();
                 attendance.setUserID(rs2.getString("user_id"));
                 attendance.setEventID(rs2.getString("event_id"));
-                attendance.setCheckIn(rs2.getTimestamp("check_in"));
-                attendance.setCheckOut(rs2.getTimestamp("check_out"));
+                attendance.setCheckIn(rs2.getTimestamp("check_in").toString());
+                attendance.setCheckOut(rs2.getTimestamp("check_out").toString());
+                attendance.setStatus(rs2.getString("status"));
+                Timestamp t1 = rs2.getTimestamp("check_in");
+                Timestamp t2 = rs2.getTimestamp("check_out");
+                double milliseconds = t2.getTime() - t1.getTime();
+                attendance.setHours(milliseconds / 3600000);
                 returnList.add(attendance);
             }
             response.type("application/json");
             response.body(returnList.toString());
+            return response;
+        });
+    }
+
+    private void createAttendance() {
+        post("/api/events/:id/attendance", (request, response) -> {
+            Attendance attendance = gson.fromJson(request.body(), Attendance.class);
+            attendance.setEventID(request.params(":id"));
+            System.out.println("PARSED ATTENDANCE: " + attendance);
+            if (attendance.toString().contains("null")) {
+                response.status(400);
+                response.type("application/json");
+                response.body("{\"message\": \"Request missing or contains null values\"}");
+                return response;
+            }
+            // Check if Event exists
+            String checkSql = "SELECT COUNT(*) FROM \"event\" where id='" + request.params(":id") + "'";
+            ResultSet rs = db.createStatement().executeQuery(checkSql);
+            while (rs.next()) {
+                if (rs.getInt("count") != 1) {
+                    response.status(404);
+                    response.type("application/json");
+                    response.body("{\"message\": \"Requested event not found\"}");
+                    return response;
+                }
+            }
+            // Check if entry aleady exists for given event and user
+            String existsSql = "SELECT COUNT(*) FROM \"attendance\" WHERE user_id='" + attendance.getUserID() + "' AND event_id='" + request.params(":id") + "'";
+            ResultSet rs2 = db.createStatement().executeQuery(existsSql);
+            while (rs2.next()) {
+                if (rs2.getInt("count") != 1) {
+                    String sql = "INSERT INTO \"attendance\" VALUES " +
+                            "(" +
+                            "'" + attendance.getUserID() + "'," +
+                            "'" + attendance.getEventID() + "'," +
+                            "'" + attendance.getCheckIn() + "'," +
+                            "'" + attendance.getCheckOut() + "'," +
+                            "'present'" +
+                            ")";
+                    db.createStatement().executeUpdate(sql);
+                    db.commit();
+                    System.out.println("Inserted records into the table...");
+                    response.type("application/json");
+                    response.body(attendance.toString());
+                    return response;
+                }
+                else {
+                    // Update existing attendance
+                    String sql = "UPDATE \"attendance\" SET " +
+                            "check_in='" + attendance.getCheckIn() + "'," +
+                            "check_out='" + attendance.getCheckOut() + "'," +
+                            "status='" + attendance.getStatus() + "'" +
+                            "WHERE user_id='" + attendance.getUserID() + "' AND event_id='" + attendance.getEventID() + "'";
+                    db.createStatement().executeUpdate(sql);
+                    db.commit();
+                    System.out.println("Updated records in the table...");
+                    response.type("application/json");
+                    response.body(attendance.toString());
+                    return response;
+                }
+            }
+            response.status(500);
+            response.type("application/json");
+            response.body("{\"message\": \"Something did the funny thing, check server logs\"}");
             return response;
         });
     }

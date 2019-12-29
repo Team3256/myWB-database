@@ -95,7 +95,8 @@ public class Migration {
                             "    \"user_id\" text,\n" +
                             "    \"event_id\" text,\n" +
                             "    \"check_in\" timestamp,\n" +
-                            "    \"check_out\" timestamp\n" +
+                            "    \"check_out\" timestamp,\n" +
+                            "    \"status\" text\n" +
                             ");";
                     db.createStatement().execute(sql);
                     System.out.println("CREATED ATTENDANCE TABLE");
