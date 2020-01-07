@@ -26,11 +26,11 @@ public class PostController {
             ArrayList<Post> returnList = new ArrayList<>();
             String sql = "SELECT * FROM \"post\"";
             ResultSet rs = db.createStatement().executeQuery(sql);
-            while(rs.next()){
+            while(rs.next()) {
                 Post post = new Post();
                 post.setId(rs.getString("id"));
                 post.setBody(rs.getString("body"));
-                post.setDate(rs.getTimestamp("date"));
+                post.setDate(rs.getTimestamp("date").toString());
                 post.setTitle(rs.getString("title"));
                 returnList.add(post);
             }
@@ -48,11 +48,11 @@ public class PostController {
             while (rs.next()) {
                 post.setId(rs.getString("id"));
                 post.setBody(rs.getString("body"));
-                post.setDate(rs.getTimestamp("date"));
+                post.setDate(rs.getTimestamp("date").toString());
                 post.setTitle(rs.getString("title"));
             }
             rs.close();
-            if (post.toString().contains("null")){
+            if (post.toString().contains("null")) {
                 response.status(404);
                 response.type("application/json");
                 response.body("{\"message\": \"Requested post not found\"}");

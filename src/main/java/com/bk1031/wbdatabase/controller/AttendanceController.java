@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import static spark.Spark.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -154,6 +155,8 @@ public class AttendanceController {
                             ")";
                     db.createStatement().executeUpdate(sql);
                     db.commit();
+                    double milliseconds = Timestamp.valueOf(attendance.getCheckOut()).getTime() - Timestamp.valueOf(attendance.getCheckIn()).getTime();
+                    attendance.setHours(milliseconds / 3600000);
                     System.out.println("Inserted records into the table...");
                     response.type("application/json");
                     response.body(attendance.toString());
@@ -168,6 +171,8 @@ public class AttendanceController {
                             "WHERE user_id='" + attendance.getUserID() + "' AND event_id='" + attendance.getEventID() + "'";
                     db.createStatement().executeUpdate(sql);
                     db.commit();
+                    double milliseconds = Timestamp.valueOf(attendance.getCheckOut()).getTime() - Timestamp.valueOf(attendance.getCheckIn()).getTime();
+                    attendance.setHours(milliseconds / 3600000);
                     System.out.println("Updated records in the table...");
                     response.type("application/json");
                     response.body(attendance.toString());
