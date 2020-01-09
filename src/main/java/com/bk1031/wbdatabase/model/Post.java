@@ -1,12 +1,10 @@
 package com.bk1031.wbdatabase.model;
 
-import java.sql.Timestamp;
-
 public class Post {
 
     private String id;
     private String title;
-    private Timestamp date;
+    private String date;
     private String body;
 
     public String getId() {
@@ -25,11 +23,11 @@ public class Post {
         this.title = title;
     }
 
-    public Timestamp getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
