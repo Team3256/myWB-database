@@ -21,6 +21,7 @@ public class AttendanceController {
     public AttendanceController(Connection db) {
         this.db = db;
         getAttendanceForUser();
+        getAttendanceForUserForEvent();
         getAttendanceForEvent();
         createAttendance();
     }
@@ -63,6 +64,68 @@ public class AttendanceController {
             }
             response.type("application/json");
             response.body(returnList.toString());
+            return response;
+        });
+    }
+
+    private void getAttendanceForUserForEvent() {
+        get("/api/users/:id/attendance/:eid", (request, response) -> {
+            Attendance attendance = new Attendance();
+            // Check if User exists
+            String checkSql = "SELECT COUNT(*) FROM \"user\" where id='" + request.params(":id") + "'";
+            ResultSet rs = db.createStatement().executeQuery(checkSql);
+            while (rs.next()) {
+                if (rs.getInt("count") != 1) {
+                    response.status(404);
+                    response.type("application/json");
+                    response.body("{\"message\": \"Requested user not found\"}");
+                    return response;
+                }
+            }
+            // Check if Event exists
+            String checkEventSql = "SELECT COUNT(*) FROM \"event\" where id='" + request.params(":eid") + "'";
+            ResultSet rs2 = db.createStatement().executeQuery(checkEventSql);
+            while (rs2.next()) {
+                if (rs2.getInt("count") != 1) {
+                    response.status(404);
+                    response.type("application/json");
+                    response.body("{\"message\": \"Requested event not found\"}");
+                    return response;
+                }
+            }
+            // Check if entry aleady exists for given event and user
+            String existsSql = "SELECT COUNT(*) FROM \"attendance\" WHERE user_id='" + request.params(":id") + "' AND event_id='" + request.params(":eid") + "'";
+            ResultSet rs3 = db.createStatement().executeQuery(existsSql);
+            while (rs3.next()) {
+                if (rs3.getInt("count") != 1) {
+                    response.status(404);
+                    response.type("application/json");
+                    response.body("{\"message\": \"Requested attendance entry not found\"}");
+                    return response;
+                }
+            }
+            // Get attendance
+            String attendanceSql = "select * from attendance where user_id='" + request.params(":id") + "' AND event_id='" + request.params(":eid") + "'";
+            ResultSet rs4 = db.createStatement().executeQuery(attendanceSql);
+            while (rs4.next()) {
+                attendance.setUserID(rs4.getString("user_id"));
+                attendance.setEventID(rs4.getString("event_id"));
+                attendance.setCheckIn(rs4.getTimestamp("check_in").toString());
+                attendance.setCheckOut(rs4.getTimestamp("check_out").toString());
+                attendance.setStatus(rs4.getString("status"));
+                Timestamp t1 = rs4.getTimestamp("check_in");
+                Timestamp t2 = rs4.getTimestamp("check_out");
+                double milliseconds = t2.getTime() - t1.getTime();
+                attendance.setHours(milliseconds / 3600000);
+            }
+            // Get type for event
+            String typeSql = "SELECT type FROM \"event\" WHERE id='" + request.params(":eid") + "'";
+            ResultSet rs5 = db.createStatement().executeQuery(typeSql);
+            while (rs5.next()) {
+                attendance.setType(rs5.getString("type"));
+            }
+            response.type("application/json");
+            response.body(attendance.toString());
             return response;
         });
     }
