@@ -6,8 +6,8 @@ git commit -m "$commit_message"
 git push
 echo "Packaging using Maven"
 mvn -Dmaven.test.skip=true package
-echo "Deploying to mywb.vcs.net"
-scp ./target/wb-database-0.0.1-SNAPSHOT.jar supadmin@mywb.vcs.net:~/database.jar
+echo "Deploying to BK1031 Server"
+scp ./target/wb-database-0.0.1-SNAPSHOT.jar BharatK@24.4.73.109:~/database.jar
 echo "Deployment complete"
 echo "Restarting server"
-ssh supadmin@mywb.vcs.net 'source ./wb_commands.sh; wbdatabase restart'
+ssh BharatK@24.4.73.109 'source ./wbdatabase.sh; wbdatabase start'
