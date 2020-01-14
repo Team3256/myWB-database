@@ -1,6 +1,7 @@
 package com.bk1031.wbdatabase.controller;
 
 import com.bk1031.wbdatabase.model.Attendance;
+import com.bk1031.wbdatabase.model.ExcusedAttendance;
 import com.google.gson.Gson;
 import static spark.Spark.*;
 import java.sql.Connection;
@@ -21,6 +22,8 @@ public class AttendanceController {
     public AttendanceController(Connection db) {
         this.db = db;
         getAttendanceForUser();
+        getExcusedAttendanceForUser();
+        createExcusedAbsence();
         getAttendanceForUserForEvent();
         getAttendanceForEvent();
         createAttendance();
@@ -64,6 +67,99 @@ public class AttendanceController {
             }
             response.type("application/json");
             response.body(returnList.toString());
+            return response;
+        });
+    }
+
+    private void getExcusedAttendanceForUser() {
+        get("/api/users/:id/attendance/excused", (request, response) -> {
+            List<ExcusedAttendance> returnList = new ArrayList<>();
+            // Check if User exists
+            String checkSql = "SELECT COUNT(*) FROM \"user\" where id='" + request.params(":id") + "'";
+            ResultSet rs = db.createStatement().executeQuery(checkSql);
+            while (rs.next()) {
+                if (rs.getInt("count") != 1) {
+                    response.status(404);
+                    response.type("application/json");
+                    response.body("{\"message\": \"Requested user not found\"}");
+                    return response;
+                }
+            }
+            // Get Attendance
+            String attendanceSql = "select * from excused_attendance where user_id='" + request.params(":id") + "'";
+            ResultSet rs2 = db.createStatement().executeQuery(attendanceSql);
+            while (rs2.next()) {
+                ExcusedAttendance attendance = new ExcusedAttendance();
+                attendance.setUserID(rs2.getString("user_id"));
+                attendance.setEventID(rs2.getString("event_id"));
+                attendance.setStatus(rs2.getString("status"));
+                attendance.setReason(rs2.getString("reason"));
+                returnList.add(attendance);
+            }
+            response.type("application/json");
+            response.body(returnList.toString());
+            return response;
+        });
+    }
+
+    private void createExcusedAbsence() {
+        post("/api/users/:id/attendance/excused", (request, response) -> {
+            ExcusedAttendance attendance = gson.fromJson(request.body(), ExcusedAttendance.class);
+            attendance.setUserID(request.params(":id"));
+            System.out.println("PARSED EXCUSED ATTENDANCE: " + attendance);
+            if (attendance.toString().contains("null")) {
+                response.status(400);
+                response.type("application/json");
+                response.body("{\"message\": \"Request missing or contains null values\"}");
+                return response;
+            }
+            // Check if Event exists
+            String checkSql = "SELECT COUNT(*) FROM \"event\" where id='" + attendance.getEventID() + "'";
+            ResultSet rs = db.createStatement().executeQuery(checkSql);
+            while (rs.next()) {
+                if (rs.getInt("count") != 1) {
+                    response.status(404);
+                    response.type("application/json");
+                    response.body("{\"message\": \"Requested event not found\"}");
+                    return response;
+                }
+            }
+            // Check if entry aleady exists for given event and user
+            String existsSql = "SELECT COUNT(*) FROM \"excused_attendance\" WHERE user_id='" + attendance.getUserID() + "' AND event_id='" + attendance.getEventID() + "'";
+            ResultSet rs2 = db.createStatement().executeQuery(existsSql);
+            while (rs2.next()) {
+                if (rs2.getInt("count") != 1) {
+                    String sql = "INSERT INTO \"excused_attendance\" VALUES " +
+                            "(" +
+                            "'" + attendance.getUserID() + "'," +
+                            "'" + attendance.getEventID() + "'," +
+                            "'" + attendance.getStatus() + "'," +
+                            "'" + attendance.getReason() + "'" +
+                            ")";
+                    db.createStatement().executeUpdate(sql);
+                    db.commit();
+                    System.out.println("Inserted records into the table...");
+                    response.type("application/json");
+                    response.body(attendance.toString());
+                    return response;
+                }
+                else {
+                    // Update existing attendance
+                    String sql = "UPDATE \"excused_attendance\" SET " +
+                            "reason='" + attendance.getReason() + "'," +
+                            "status='" + attendance.getStatus() + "'" +
+                            "WHERE user_id='" + attendance.getUserID() + "' AND event_id='" + attendance.getEventID() + "'";
+                    db.createStatement().executeUpdate(sql);
+                    db.commit();
+                    System.out.println("Updated records in the table...");
+                    response.type("application/json");
+                    response.body(attendance.toString());
+                    return response;
+                }
+            }
+            response.status(500);
+            response.type("application/json");
+            response.body("{\"message\": \"Something did the funny thing, check server logs\"}");
             return response;
         });
     }

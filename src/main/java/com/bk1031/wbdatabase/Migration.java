@@ -159,5 +159,29 @@ public class Migration {
         } catch (SQLException e) {
             System.out.println(e.getLocalizedMessage());
         }
+        // Excused Attendance Table
+        // Post table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'excused_attendance');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE EXCUSED ATTENDANCE ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"excused_attendance\" (\n" +
+                            "     \"user_id\" text,\n" +
+                            "     \"event_id\" text,\n" +
+                            "     \"status\" text,\n" +
+                            "     \"reason\" text\n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED EXCUSED ATTENDANCE TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
     }
 }

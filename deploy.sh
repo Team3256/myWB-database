@@ -10,4 +10,4 @@ echo "Deploying to BK1031 Server"
 scp ./target/wb-database-0.0.1-SNAPSHOT.jar BharatK@24.4.73.109:~/database.jar
 echo "Deployment complete"
 echo "Restarting server"
-ssh BharatK@24.4.73.109 'source ./wbdatabase.sh; wbdatabase start'
+ssh BharatK@24.4.73.109 'source .wbdatabase.sh; wbdatabase start'
