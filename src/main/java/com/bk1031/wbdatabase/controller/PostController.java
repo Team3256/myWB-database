@@ -96,7 +96,11 @@ public class PostController {
                     "title='" + post.getTitle() + "'," +
                     "WHERE id='" + post.getId() + "'";
             db.createStatement().executeUpdate(sql);
-
+            db.commit();
+            System.out.println("Inserted records into the table...");
+            res.type("application/json");
+            res.body(post.toString());
+            return res;
         });
     }
 }
