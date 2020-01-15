@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import static spark.Spark.get;
+import static spark.Spark.put;
 
 public class PostController {
     private Connection db;
@@ -61,6 +62,41 @@ public class PostController {
             response.type("application/json");
             response.body(post.toString());
             return response;
+        });
+    }
+
+    private void deletePost(){
+
+    }
+
+    private void updatePost() {
+        put("/api/posts/:id", (req, res) -> {
+            Post post = gson.fromJson(req.body(), Post.class);
+            post.setId(req.params(":id"));
+            System.out.println("PARSED POST: " + post);
+            if(post.toString().contains("null")){
+                res.status(400);
+                res.type("application/json");
+                res.body("{\"message\": \"Request missing or contains null values\"}");
+                return res;
+            }
+            String existsSql = "SELECT COUNT(1) FROM \"post\" WHERE id = '" + post.getId() + "'";
+            ResultSet rs = db.createStatement().executeQuery(existsSql);
+            while (rs.next()){
+                if (rs.getInt("count") != 1){
+                    res.status(400);
+                    res.type("application/json");
+                    res.body("{\"message\": \"No mapping for given id: " + post.getId() + "\"}");
+                    return res;
+                }
+            }
+            String sql = "UPDATE \"post\" SET " +
+                    "body='" + post.getBody() + "'," +
+                    "date='" + post.getDate() + "'," +
+                    "title='" + post.getTitle() + "'," +
+                    "WHERE id='" + post.getId() + "'";
+            db.createStatement().executeUpdate(sql);
+
         });
     }
 }
