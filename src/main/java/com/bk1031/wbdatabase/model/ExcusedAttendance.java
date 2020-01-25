@@ -45,7 +45,7 @@ public class ExcusedAttendance {
                 "\"userID\":\"" + userID + "\"," +
                 "\"eventID\":\"" + eventID + "\"," +
                 "\"status\":\"" + status + "\"," +
-                "\"type\":\"" + reason + "\"" +
+                "\"reason\":\"" + reason + "\"" +
                 "}";
     }
 }
