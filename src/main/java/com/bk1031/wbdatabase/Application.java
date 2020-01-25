@@ -4,21 +4,28 @@ import com.bk1031.wbdatabase.controller.AttendanceController;
 import com.bk1031.wbdatabase.controller.EventController;
 import com.bk1031.wbdatabase.controller.PostController;
 import com.bk1031.wbdatabase.controller.UserController;
-import java.io.File;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
+
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import static spark.Spark.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.Reader;
+
 import java.util.Date;
 import java.util.Properties;
 
 public class Application {
 
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws SQLException, IOException, FirebaseMessagingException {
 		// Start Spark Webserver
 		port(8081);
 		init();
@@ -28,6 +35,21 @@ public class Application {
 		db.setAutoCommit(false);
 		// Initialize DB
 		Migration.v1(db);
+
+		// Firebase admin time
+		FileInputStream serviceAccount =
+				new FileInputStream("src/main/resources/serviceAccountKey.json");
+
+		FirebaseOptions options = new FirebaseOptions.Builder()
+				.setCredentials(GoogleCredentials.fromStream(serviceAccount))
+				.setDatabaseUrl("https://mywb-app.firebaseio.com")
+				.build();
+
+		FirebaseApp.initializeApp(options);
+
+		FirebaseDatabase.getInstance().getReference("testing").push().setValueAsync("server be online");
+		FirebaseMessaging.getInstance().send(Message.builder().setTopic("DEV").setNotification(Notification.builder().setTitle("test").setBody("hello world").build()).build());
+
 //		String basePath = new File("").getAbsolutePath();
 //		if (!basePath.endsWith("/wb-database")) {
 //			basePath += "/wb-database";

@@ -2,6 +2,9 @@ package com.bk1031.wbdatabase.controller;
 
 import com.bk1031.wbdatabase.model.Event;
 import com.bk1031.wbdatabase.model.Post;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import com.google.gson.Gson;
 
 import java.sql.Connection;
@@ -101,6 +104,7 @@ public class PostController {
             db.createStatement().executeUpdate(sql);
             db.commit();
             System.out.println("Inserted records into the table...");
+            FirebaseMessaging.getInstance().send(Message.builder().setTopic("ALL_DEVICES").setNotification(Notification.builder().setTitle("[NEW ANNOUNCEMENT] " + post.getTitle()).setBody(post.getBody()).build()).build());
             res.type("application/json");
             res.body(post.toString());
             return res;
