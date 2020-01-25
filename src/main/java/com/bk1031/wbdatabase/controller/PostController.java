@@ -1,5 +1,6 @@
 package com.bk1031.wbdatabase.controller;
 
+import com.bk1031.wbdatabase.model.Event;
 import com.bk1031.wbdatabase.model.Post;
 import com.google.gson.Gson;
 
@@ -8,8 +9,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-import static spark.Spark.get;
-import static spark.Spark.put;
+import static spark.Spark.*;
 
 public class PostController {
     private Connection db;
@@ -20,6 +20,8 @@ public class PostController {
         this.db = db;
         getAllPosts();
         getPost();
+        updatePost();
+        createPost();
     }
 
     private void getAllPosts() {
@@ -67,6 +69,42 @@ public class PostController {
 
     private void deletePost(){
 
+    }
+
+    private void createPost() {
+        post("/api/posts", (req, res) -> {
+            Post post = gson.fromJson(req.body(), Post.class);
+            System.out.println("PARSED POST: " + post);
+            if (post.toString().contains("null")) {
+                res.status(400);
+                res.type("application/json");
+                res.body("{\"message\": \"Request missing or contains null values\"}");
+                return res;
+            }
+            String existsSql = "SELECT COUNT(1) FROM \"post\" WHERE id = '" + post.getId() + "'";
+            ResultSet rs = db.createStatement().executeQuery(existsSql);
+            while (rs.next()) {
+                if (rs.getInt("count") == 1) {
+                    res.status(409);
+                    res.type("application/json");
+                    res.body("{\"message\": \"Post already exists with id: " + post.getId() + "\"}");
+                    return res;
+                }
+            }
+            String sql = "INSERT INTO \"post\" VALUES " +
+                    "(" +
+                    "'" + post.getId() + "'," +
+                    "'" + post.getTitle() + "'," +
+                    "'" + post.getDate() + "'," +
+                    "'" + post.getBody() + "'" +
+                    ")";
+            db.createStatement().executeUpdate(sql);
+            db.commit();
+            System.out.println("Inserted records into the table...");
+            res.type("application/json");
+            res.body(post.toString());
+            return res;
+        });
     }
 
     private void updatePost() {
