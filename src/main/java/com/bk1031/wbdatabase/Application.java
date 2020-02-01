@@ -86,24 +86,26 @@ public class Application {
 			System.out.println(new Date());
 			System.out.println("REQUESTED ROUTE: " + request.url() + " [" + request.requestMethod() + "]");
 			System.out.println("REQUEST BODY: " + request.body());
-			if (request.headers("Authentication") != null) {
-				boolean authenticated = false;
-				System.out.println(request.headers("Authentication"));
-				String key = request.headers("Authentication").split("Bearer ")[1];
-				for (int i = 0; i < Constants.apiKeys.size(); i++) {
-					if (Constants.apiKeys.get(i).equals(key)) {
-						// Authenticated!
-						authenticated = true;
+			if (!request.requestMethod().equals("OPTIONS")) {
+				if (request.headers("Authentication") != null) {
+					boolean authenticated = false;
+					System.out.println(request.headers("Authentication"));
+					String key = request.headers("Authentication").split("Bearer ")[1];
+					for (int i = 0; i < Constants.apiKeys.size(); i++) {
+						if (Constants.apiKeys.get(i).equals(key)) {
+							// Authenticated!
+							authenticated = true;
+						}
+					}
+					if (!authenticated) {
+						System.out.println("INVALID API KEY!");
+						halt(401, "{\"message\": \"Invalid API Key\"}");
 					}
 				}
-				if (!authenticated) {
-					System.out.println("INVALID API KEY!");
-					halt(401, "{\"message\": \"Invalid API Key\"}");
+				else {
+					System.out.println("NOT AUTHENTICATED!");
+					halt(401, "{\"message\": \"Request not authorized\"}");
 				}
-			}
-			else {
-				System.out.println("NOT AUTHENTICATED!");
-				halt(401, "{\"message\": \"Request not authorized\"}");
 			}
 			response.header("Access-Control-Allow-Origin", "*");
 			response.header("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
