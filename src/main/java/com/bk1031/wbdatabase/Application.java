@@ -1,9 +1,6 @@
 package com.bk1031.wbdatabase;
 
-import com.bk1031.wbdatabase.controller.AttendanceController;
-import com.bk1031.wbdatabase.controller.EventController;
-import com.bk1031.wbdatabase.controller.PostController;
-import com.bk1031.wbdatabase.controller.UserController;
+import com.bk1031.wbdatabase.controller.*;
 import com.bk1031.wbdatabase.model.Post;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -130,6 +127,7 @@ public class Application {
 		EventController eventController = new EventController(db);
 		AttendanceController attendanceController = new AttendanceController(db);
 		PostController postController = new PostController(db);
+		PurchaseRequestController purchaseRequestController = new PurchaseRequestController(db);
 	}
 
 	public Connection connect() {

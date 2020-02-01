@@ -224,5 +224,36 @@ public class Migration {
         } catch (SQLException e) {
             System.out.println(e.getLocalizedMessage());
         }
+        // PURCHASE REQUEST Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'purchase_request');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE PURCHASE REQUEST ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"purchase_request\" (\n" +
+                            "     \"id\" text,\n" +
+                            "     \"is_sheet\" bool,\n" +
+                            "     \"user_id\" text,\n" +
+                            "     \"part_name\" text,\n" +
+                            "     \"part_quantity\" integer, \n" +
+                            "     \"part_url\" text, \n" +
+                            "     \"vendor\" text, \n" +
+                            "     \"need_by\" date, \n" +
+                            "     \"part_number\" text, \n" +
+                            "     \"cost\" double precision, \n" +
+                            "     \"total_cost\" double precision, \n" +
+                            "     \"justification\" text \n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED PURCHASE REQUEST TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
     }
 }
