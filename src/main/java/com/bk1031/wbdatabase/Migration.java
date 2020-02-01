@@ -141,13 +141,13 @@ public class Migration {
             ResultSet rs = db.createStatement().executeQuery(sql);
             while (rs.next()) {
                 if (rs.getBoolean("exists")) {
-                    System.out.println("TABLE EVENT ALREADY EXISTS!");
+                    System.out.println("TABLE POST ALREADY EXISTS!");
                 }
                 else {
                     sql = "CREATE TABLE \"post\" (\n" +
                             "     \"id\" text,\n" +
+                            "     \"author_id\" text,\n" +
                             "     \"title\" text,\n" +
-                            // TODO: Add author field
                             "     \"date\" timestamp,\n" +
                             "     \"body\" text\n" +
                             ");";
@@ -159,8 +159,28 @@ public class Migration {
         } catch (SQLException e) {
             System.out.println(e.getLocalizedMessage());
         }
+        // Post_Tags table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'post_tag');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE POST_TAG ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"post_tag\" (\n" +
+                            "     \"post_id\" text,\n" +
+                            "     \"tag\" text\n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED POST_TAG TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
         // Excused Attendance Table
-        // Post table
         try {
             String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'excused_attendance');";
             ResultSet rs = db.createStatement().executeQuery(sql);
@@ -177,6 +197,27 @@ public class Migration {
                             ");";
                     db.createStatement().execute(sql);
                     System.out.println("CREATED EXCUSED ATTENDANCE TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        // API KEY table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'api_key');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE API_KEY ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"api_key\" (\n" +
+                            "     \"id\" text,\n" +
+                            "     \"level\" integer\n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED API_KEY TABLE");
                     db.commit();
                 }
             }
