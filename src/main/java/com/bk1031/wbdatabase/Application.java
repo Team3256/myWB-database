@@ -86,6 +86,7 @@ public class Application {
 			System.out.println(new Date());
 			System.out.println("REQUESTED ROUTE: " + request.url() + " [" + request.requestMethod() + "]");
 			System.out.println("REQUEST BODY: " + request.body());
+			System.out.println("REQUEST ORIGIN: " + request.host() + "[" + request.ip() + "]");
 			if (!request.requestMethod().equals("OPTIONS")) {
 				if (request.headers("Authentication") != null) {
 					boolean authenticated = false;
