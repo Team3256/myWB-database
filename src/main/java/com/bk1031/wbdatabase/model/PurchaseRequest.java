@@ -1,6 +1,6 @@
 package com.bk1031.wbdatabase.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class PurchaseRequest {
 
