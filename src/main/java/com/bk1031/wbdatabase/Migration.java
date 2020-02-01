@@ -245,7 +245,8 @@ public class Migration {
                             "     \"part_number\" text, \n" +
                             "     \"cost\" double precision, \n" +
                             "     \"total_cost\" double precision, \n" +
-                            "     \"justification\" text \n" +
+                            "     \"justification\" text, \n" +
+                            "     \"approved\" bool \n" +
                             ");";
                     db.createStatement().execute(sql);
                     System.out.println("CREATED PURCHASE REQUEST TABLE");

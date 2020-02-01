@@ -1,5 +1,7 @@
 package com.bk1031.wbdatabase.model;
 
+import java.sql.Date;
+
 public class PurchaseRequest {
 
     private String id;
@@ -9,11 +11,12 @@ public class PurchaseRequest {
     private int partQuantity;
     private String partUrl;
     private String vendor;
-    private String needBy;
+    private Date needBy;
     private String partNumber;
     private double cost;
     private double totalCost;
     private String justification;
+    private boolean approved;
 
     public String getId() {
         return id;
@@ -71,11 +74,11 @@ public class PurchaseRequest {
         this.vendor = vendor;
     }
 
-    public String getNeedBy() {
+    public Date getNeedBy() {
         return needBy;
     }
 
-    public void setNeedBy(String needBy) {
+    public void setNeedBy(Date needBy) {
         this.needBy = needBy;
     }
 
@@ -111,6 +114,14 @@ public class PurchaseRequest {
         this.justification = justification;
     }
 
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -125,7 +136,8 @@ public class PurchaseRequest {
                 "\"partNumber\":\"" + partNumber + "\"," +
                 "\"cost\":" + cost + "," +
                 "\"totalCost\":" + totalCost + "," +
-                "\"justification\":\"" + justification + "\"" +
+                "\"justification\":\"" + justification + "\"," +
+                "\"approved\":" + approved + "" +
                 "}";
     }
 }
