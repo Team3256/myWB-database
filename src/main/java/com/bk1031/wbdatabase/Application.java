@@ -10,8 +10,12 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.sun.mail.smtp.SMTPTransport;
 import io.netty.util.Constant;
 
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,7 +29,7 @@ import java.util.Properties;
 
 public class Application {
 
-	public static void main(String[] args) throws SQLException, IOException, FirebaseMessagingException {
+	public static void main(String[] args) throws SQLException, IOException, FirebaseMessagingException, MessagingException {
 		// Start Spark Webserver
 		port(8081);
 		init();
