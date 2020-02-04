@@ -51,7 +51,7 @@ public class PurchaseRequestController {
                 pr.setCost(rs.getDouble("cost"));
                 pr.setTotalCost(rs.getDouble("total_cost"));
                 pr.setJustification(rs.getString("justification"));
-                pr.setStatus(rs.getBoolean("status"));
+                pr.setStatus(rs.getString("status"));
                 returnList.add(pr);
             }
             rs.close();
@@ -81,7 +81,7 @@ public class PurchaseRequestController {
                 pr.setCost(rs.getDouble("cost"));
                 pr.setTotalCost(rs.getDouble("total_cost"));
                 pr.setJustification(rs.getString("justification"));
-                pr.setStatus(rs.getBoolean("status"));
+                pr.setStatus(rs.getString("status"));
             }
             rs.close();
             if (pr.toString().contains("null")) {

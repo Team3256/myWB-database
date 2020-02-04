@@ -147,7 +147,7 @@ public class PurchaseRequest {
                 "\"cost\":" + cost + "," +
                 "\"totalCost\":" + totalCost + "," +
                 "\"justification\":\"" + justification + "\"," +
-                "\"status\":" + status + "" +
+                "\"status\":\"" + status + "\"" +
                 "}";
     }
 }
