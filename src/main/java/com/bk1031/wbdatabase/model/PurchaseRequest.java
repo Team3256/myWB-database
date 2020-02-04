@@ -12,6 +12,7 @@ public class PurchaseRequest {
     private String partUrl;
     private String vendor;
     private Date needBy;
+    private Date submittedOn;
     private String partNumber;
     private double cost;
     private double totalCost;
@@ -122,6 +123,14 @@ public class PurchaseRequest {
         this.approved = approved;
     }
 
+    public Date getSubmittedOn() {
+        return submittedOn;
+    }
+
+    public void setSubmittedOn(Date submittedOn) {
+        this.submittedOn = submittedOn;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -133,6 +142,7 @@ public class PurchaseRequest {
                 "\"partUrl\":\"" + partUrl + "\"," +
                 "\"vendor\":\"" + vendor + "\"," +
                 "\"needBy\":\"" + needBy + "\"," +
+                "\"submittedOn\":\"" + submittedOn + "\"," +
                 "\"partNumber\":\"" + partNumber + "\"," +
                 "\"cost\":" + cost + "," +
                 "\"totalCost\":" + totalCost + "," +

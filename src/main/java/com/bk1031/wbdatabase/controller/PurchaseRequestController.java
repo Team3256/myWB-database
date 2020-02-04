@@ -28,6 +28,7 @@ public class PurchaseRequestController {
     public PurchaseRequestController(Connection db) {
        this.db = db;
        getAllPurchaseRequests();
+       getPurchaseRequest();
        createPurchaseRequest();
     }
 
@@ -47,6 +48,7 @@ public class PurchaseRequestController {
                 pr.setPartUrl(rs.getString("part_url"));
                 pr.setVendor(rs.getString("vendor"));
                 pr.setNeedBy(rs.getDate("need_by"));
+                pr.setSubmittedOn(rs.getDate("submitted_on"));
                 pr.setPartNumber(rs.getString("part_number"));
                 pr.setCost(rs.getDouble("cost"));
                 pr.setTotalCost(rs.getDouble("total_cost"));
@@ -57,6 +59,41 @@ public class PurchaseRequestController {
             rs.close();
             response.type("application/json");
             response.body(returnList.toString());
+            return response;
+        });
+    }
+
+    private void getPurchaseRequest() {
+        get("/api/purchase-requests/:id", (request, response) -> {
+            // Get PR
+            PurchaseRequest pr = new PurchaseRequest();
+            String sql = "SELECT * FROM \"purchase_request\" WHERE id='" + request.params(":id") + "'";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                pr.setId(rs.getString("id"));
+                pr.setSheet(rs.getBoolean("is_sheet"));
+                pr.setUserID(rs.getString("user_id"));
+                pr.setPartName(rs.getString("part_name"));
+                pr.setPartQuantity(rs.getInt("part_quantity"));
+                pr.setPartUrl(rs.getString("part_url"));
+                pr.setVendor(rs.getString("vendor"));
+                pr.setNeedBy(rs.getDate("need_by"));
+                pr.setSubmittedOn(rs.getDate("submitted_on"));
+                pr.setPartNumber(rs.getString("part_number"));
+                pr.setCost(rs.getDouble("cost"));
+                pr.setTotalCost(rs.getDouble("total_cost"));
+                pr.setJustification(rs.getString("justification"));
+                pr.setApproved(rs.getBoolean("approved"));
+            }
+            rs.close();
+            if (pr.toString().contains("null")) {
+                response.status(404);
+                response.type("application/json");
+                response.body("{\"message\": \"Requested event not found\"}");
+                return response;
+            }
+            response.type("application/json");
+            response.body(pr.toString());
             return response;
         });
     }
@@ -91,6 +128,7 @@ public class PurchaseRequestController {
                     "'" + pr.getPartUrl() + "'," +
                     "'" + pr.getVendor() + "'," +
                     "'" + pr.getNeedBy() + "'," +
+                    "'" + pr.getSubmittedOn() + "'," +
                     "'" + pr.getPartNumber() + "'," +
                     "" + pr.getCost() + "," +
                     "" + pr.getTotalCost() + "," +

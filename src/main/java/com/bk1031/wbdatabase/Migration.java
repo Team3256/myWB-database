@@ -242,6 +242,7 @@ public class Migration {
                             "     \"part_url\" text, \n" +
                             "     \"vendor\" text, \n" +
                             "     \"need_by\" date, \n" +
+                            "     \"submitted_on\" date, \n" +
                             "     \"part_number\" text, \n" +
                             "     \"cost\" double precision, \n" +
                             "     \"total_cost\" double precision, \n" +
