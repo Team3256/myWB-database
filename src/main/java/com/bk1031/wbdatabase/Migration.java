@@ -247,7 +247,7 @@ public class Migration {
                             "     \"cost\" double precision, \n" +
                             "     \"total_cost\" double precision, \n" +
                             "     \"justification\" text, \n" +
-                            "     \"approved\" bool \n" +
+                            "     \"status\" text \n" +
                             ");";
                     db.createStatement().execute(sql);
                     System.out.println("CREATED PURCHASE REQUEST TABLE");

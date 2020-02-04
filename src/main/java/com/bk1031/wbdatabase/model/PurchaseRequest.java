@@ -17,7 +17,7 @@ public class PurchaseRequest {
     private double cost;
     private double totalCost;
     private String justification;
-    private boolean approved;
+    private String status;
 
     public String getId() {
         return id;
@@ -115,12 +115,12 @@ public class PurchaseRequest {
         this.justification = justification;
     }
 
-    public boolean isApproved() {
-        return approved;
+    public String isStatus() {
+        return status;
     }
 
-    public void setApproved(boolean approved) {
-        this.approved = approved;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Date getSubmittedOn() {
@@ -147,7 +147,7 @@ public class PurchaseRequest {
                 "\"cost\":" + cost + "," +
                 "\"totalCost\":" + totalCost + "," +
                 "\"justification\":\"" + justification + "\"," +
-                "\"approved\":" + approved + "" +
+                "\"status\":" + status + "" +
                 "}";
     }
 }

@@ -1,11 +1,9 @@
 package com.bk1031.wbdatabase.controller;
 
 import com.bk1031.wbdatabase.Constants;
-import com.bk1031.wbdatabase.model.Event;
 import com.bk1031.wbdatabase.model.PurchaseRequest;
 import com.google.gson.Gson;
 import com.sun.mail.smtp.SMTPTransport;
-import io.netty.util.Constant;
 
 import javax.mail.*;
 import javax.mail.internet.*;
@@ -53,7 +51,7 @@ public class PurchaseRequestController {
                 pr.setCost(rs.getDouble("cost"));
                 pr.setTotalCost(rs.getDouble("total_cost"));
                 pr.setJustification(rs.getString("justification"));
-                pr.setApproved(rs.getBoolean("approved"));
+                pr.setStatus(rs.getBoolean("status"));
                 returnList.add(pr);
             }
             rs.close();
@@ -83,13 +81,13 @@ public class PurchaseRequestController {
                 pr.setCost(rs.getDouble("cost"));
                 pr.setTotalCost(rs.getDouble("total_cost"));
                 pr.setJustification(rs.getString("justification"));
-                pr.setApproved(rs.getBoolean("approved"));
+                pr.setStatus(rs.getBoolean("status"));
             }
             rs.close();
             if (pr.toString().contains("null")) {
                 response.status(404);
                 response.type("application/json");
-                response.body("{\"message\": \"Requested event not found\"}");
+                response.body("{\"message\": \"Requested purchase request not found\"}");
                 return response;
             }
             response.type("application/json");
@@ -133,7 +131,7 @@ public class PurchaseRequestController {
                     "" + pr.getCost() + "," +
                     "" + pr.getTotalCost() + "," +
                     "'" + pr.getJustification() + "'," +
-                    "'" + pr.isApproved() + "'" +
+                    "'" + pr.isStatus() + "'" +
                     ")";
             db.createStatement().executeUpdate(sql);
             db.commit();
