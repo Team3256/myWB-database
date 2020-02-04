@@ -5,7 +5,6 @@ import com.bk1031.wbdatabase.model.Event;
 import com.bk1031.wbdatabase.model.PurchaseRequest;
 import com.google.gson.Gson;
 import com.sun.mail.smtp.SMTPTransport;
-import com.sun.tools.internal.jxc.ap.Const;
 import io.netty.util.Constant;
 
 import javax.mail.*;
