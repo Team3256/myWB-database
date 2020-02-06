@@ -98,7 +98,7 @@ public class PurchaseRequestController {
     }
 
     private void updatePurchaseRequestStatus() {
-        get("/api/purchase-requests/:id/:status", (request, response) -> {
+        get("/api/purchase-requests/:id/status/:status", (request, response) -> {
             // Get PR
             PurchaseRequest pr = new PurchaseRequest();
             String sql = "SELECT * FROM \"purchase_request\" WHERE id='" + request.params(":id") + "'";

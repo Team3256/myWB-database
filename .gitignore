@@ -4,6 +4,7 @@ target/
 !**/src/main/**
 !**/src/test/**
 /src/main/resources/serviceAccountKey.json
+/src/main/resources/clientkeystore
 /src/main/java/com/bk1031/wbdatabase/Constants.java
 
 ### STS ###

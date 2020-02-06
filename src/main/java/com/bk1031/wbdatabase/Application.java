@@ -31,6 +31,7 @@ public class Application {
 
 	public static void main(String[] args) throws SQLException, IOException, FirebaseMessagingException, MessagingException {
 		// Start Spark Webserver
+		secure(Constants.keyStoreLocation, Constants.keyStorePassword, null, null);
 		port(8081);
 		init();
         // Connect to Postgres DB
