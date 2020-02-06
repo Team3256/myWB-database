@@ -27,6 +27,7 @@ public class PurchaseRequestController {
        this.db = db;
        getAllPurchaseRequests();
        getPurchaseRequest();
+       updatePurchaseRequestStatus();
        createPurchaseRequest();
     }
 
@@ -96,6 +97,45 @@ public class PurchaseRequestController {
         });
     }
 
+    private void updatePurchaseRequestStatus() {
+        get("/api/purchase-requests/:id/:status", (request, response) -> {
+            // Get PR
+            PurchaseRequest pr = new PurchaseRequest();
+            String sql = "SELECT * FROM \"purchase_request\" WHERE id='" + request.params(":id") + "'";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                pr.setId(rs.getString("id"));
+                pr.setSheet(rs.getBoolean("is_sheet"));
+                pr.setUserID(rs.getString("user_id"));
+                pr.setPartName(rs.getString("part_name"));
+                pr.setPartQuantity(rs.getInt("part_quantity"));
+                pr.setPartUrl(rs.getString("part_url"));
+                pr.setVendor(rs.getString("vendor"));
+                pr.setNeedBy(rs.getDate("need_by"));
+                pr.setSubmittedOn(rs.getDate("submitted_on"));
+                pr.setPartNumber(rs.getString("part_number"));
+                pr.setCost(rs.getDouble("cost"));
+                pr.setTotalCost(rs.getDouble("total_cost"));
+                pr.setJustification(rs.getString("justification"));
+                pr.setStatus(rs.getString("status"));
+            }
+            rs.close();
+            if (pr.toString().contains("null")) {
+                response.status(404);
+                response.type("application/json");
+                response.body("{\"message\": \"Requested purchase request not found\"}");
+                return response;
+            }
+            pr.setStatus(request.params(":status"));
+            String updateSql = "UPDATE \"purchase_request\" SET status='" + pr.getStatus() + "' WHERE id='" + pr.getId() + "';";
+            db.createStatement().executeUpdate(updateSql);
+            db.commit();
+            response.type("application/json");
+            response.body(pr.toString());
+            return response;
+        });
+    }
+
     private void createPurchaseRequest() {
         post("/api/purchase-requests", (req, res) -> {
             PurchaseRequest pr = gson.fromJson(req.body(), PurchaseRequest.class);
@@ -131,7 +171,7 @@ public class PurchaseRequestController {
                     "" + pr.getCost() + "," +
                     "" + pr.getTotalCost() + "," +
                     "'" + pr.getJustification() + "'," +
-                    "'" + pr.isStatus() + "'" +
+                    "'" + pr.getStatus() + "'" +
                     ")";
             db.createStatement().executeUpdate(sql);
             db.commit();

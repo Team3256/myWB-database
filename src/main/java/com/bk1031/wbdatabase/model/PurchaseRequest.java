@@ -115,7 +115,7 @@ public class PurchaseRequest {
         this.justification = justification;
     }
 
-    public String isStatus() {
+    public String getStatus() {
         return status;
     }
 
