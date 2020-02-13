@@ -31,7 +31,7 @@ public class Application {
 
 	public static void main(String[] args) throws SQLException, IOException, FirebaseMessagingException, MessagingException {
 		// Start Spark Webserver
-		secure(Constants.keyStoreLocation, Constants.keyStorePassword, null, null);
+//		secure(Constants.keyStoreLocation, Constants.keyStorePassword, null, null);
 		port(8081);
 		init();
         // Connect to Postgres DB
@@ -81,8 +81,6 @@ public class Application {
 			if (accessControlRequestMethod != null) {
 				response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
 			}
-			response.header("Access-Control-Allow-Headers", "Authorization");
-			response.header("Access-Control-Allow-Credentials", "true");
 			return "OK";
 		});
 		// Check authentication and log
@@ -114,10 +112,8 @@ public class Application {
 				}
 			}
 			response.header("Access-Control-Allow-Origin", "*");
-			response.header("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
-			response.header("Access-Control-Allow-Headers", "Authorization");
-			response.header("Access-Control-Allow-Credentials", "true");
-			response.header("Content-Type", "application/json");
+			response.header("Access-Control-Allow-Headers", "*");
+			response.type("application/json");
 		});
 		// Initialize request logging
 		after((request, response) -> {
