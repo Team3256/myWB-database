@@ -5,7 +5,7 @@ import com.bk1031.wbdatabase.model.Post;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.*;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -52,7 +52,7 @@ public class Application {
 		FirebaseApp.initializeApp(options);
 
 		FirebaseDatabase.getInstance().getReference("testing").push().setValueAsync("server be online");
-		FirebaseMessaging.getInstance().send(Message.builder().setTopic("DEV").setNotification(Notification.builder().setTitle("test").setBody("hello world").build()).build());
+		FirebaseMessaging.getInstance().send(Message.builder().setTopic("DEV").setNotification(Notification.builder().setTitle("hello world").setBody("server be online").build()).build());
 
 		app.getAllKeys(db);
 
@@ -99,11 +99,12 @@ public class Application {
 						if (Constants.apiKeys.get(i).equals(key)) {
 							// Authenticated!
 							authenticated = true;
+							FirebaseDatabase.getInstance().getReference("tokens/" + key).setValueAsync(null);
 						}
 					}
 					if (!authenticated) {
-						System.out.println("INVALID API KEY!");
-						halt(401, "{\"message\": \"Invalid API Key\"}");
+						System.out.println("INVALID AUTHENTICATION!");
+						halt(401, "{\"message\": \"Invalid authentication token\"}");
 					}
 				}
 				else {
@@ -158,6 +159,27 @@ public class Application {
 			Constants.apiKeys.add(rs.getString("id"));
 		}
 		rs.close();
+		FirebaseDatabase.getInstance().getReference("tokens").addChildEventListener(new ChildEventListener() {
+			@Override
+			public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+				System.out.println("NEW AUTH TOKEN: " + dataSnapshot.getValue().toString());
+				Constants.apiKeys.add(dataSnapshot.getValue().toString());
+			}
+
+			@Override
+			public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+
+			@Override
+			public void onChildRemoved(DataSnapshot dataSnapshot) {
+				Constants.apiKeys.remove(dataSnapshot.getValue().toString());
+			}
+
+			@Override
+			public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+
+			@Override
+			public void onCancelled(DatabaseError databaseError) {}
+		});
 //		get("/api/keys", (request, response) -> {
 //			Constants.apiKeys.clear();
 //			ResultSet rs2 = db.createStatement().executeQuery(sql);

@@ -274,6 +274,11 @@ public class AttendanceController {
             attendance.setEventID(request.params(":id"));
             attendance.setType("");
             System.out.println("PARSED ATTENDANCE: " + attendance);
+            if (attendance.getCheckIn().equals("null")) {
+                // use server time idiot
+//                Date now = new Date();
+                System.out.println("bruh");
+            }
             if (attendance.toString().contains("null")) {
                 response.status(400);
                 response.type("application/json");
