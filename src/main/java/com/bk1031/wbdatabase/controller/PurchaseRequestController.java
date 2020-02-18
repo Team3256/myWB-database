@@ -163,19 +163,19 @@ public class PurchaseRequestController {
             }
             String sql = "INSERT INTO \"purchase_request\" VALUES " +
                     "(" +
-                    "'" + pr.getId() + "'," +
+                    "'" + pr.getId().replace("'", "''") + "'," +
                     "" + pr.isSheet() + "," +
                     "'" + pr.getUserID() + "'," +
-                    "'" + pr.getPartName() + "'," +
+                    "'" + pr.getPartName().replace("'", "''") + "'," +
                     "" + pr.getPartQuantity() + "," +
                     "'" + pr.getPartUrl() + "'," +
-                    "'" + pr.getVendor() + "'," +
+                    "'" + pr.getVendor().replace("'", "''") + "'," +
                     "'" + pr.getNeedBy() + "'," +
                     "'" + pr.getSubmittedOn() + "'," +
-                    "'" + pr.getPartNumber() + "'," +
+                    "'" + pr.getPartNumber().replace("'", "''") + "'," +
                     "" + pr.getCost() + "," +
                     "" + pr.getTotalCost() + "," +
-                    "'" + pr.getJustification() + "'," +
+                    "'" + pr.getJustification().replace("'", "''") + "'," +
                     "'" + pr.getStatus() + "'" +
                     ")";
             db.createStatement().executeUpdate(sql);
