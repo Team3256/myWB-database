@@ -88,7 +88,7 @@ public class PostController {
                 db.createStatement().executeUpdate(sql);
             }
             db.commit();
-            FirebaseMessaging.getInstance().send(Message.builder().setTopic("DEV").setNotification(Notification.builder().setTitle("New Announcement!").setBody(post.getTitle()).build()).build());
+            FirebaseMessaging.getInstance().send(Message.builder().setTopic("ALL_DEVICES").setNotification(Notification.builder().setTitle("New Announcement!").setBody(post.getTitle()).build()).build());
             System.out.println("Inserted records into the table...");
             res.type("application/json");
             res.body(post.toString());

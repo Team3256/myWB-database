@@ -70,7 +70,7 @@ public class Post {
         return "{" +
                 "\"id\":\"" + id + "\"," +
                 "\"title\":\"" + title + "\"," +
-                "\"author_id\":\"" + authorID + "\"," +
+                "\"authorID\":\"" + authorID + "\"," +
                 "\"tags\":" + getTags() + "," +
                 "\"date\":\"" + date + "\"," +
                 "\"body\":\"" + body + "\"" +

@@ -90,7 +90,7 @@ public class Application {
 			System.out.println("REQUESTED ROUTE: " + request.url() + " [" + request.requestMethod() + "]");
 			System.out.println("REQUEST BODY: " + request.body());
 			System.out.println("REQUEST ORIGIN: " + request.host() + " [" + request.ip() + "]");
-			if (!request.requestMethod().equals("OPTIONS")) {
+			if (!request.requestMethod().equals("OPTIONS") && !request.requestMethod().equals("GET")) {
 				if (request.headers("Authentication") != null) {
 					boolean authenticated = false;
 					System.out.println(request.headers("Authentication"));
@@ -133,6 +133,8 @@ public class Application {
 		AttendanceController attendanceController = new AttendanceController(db);
 		PostController postController = new PostController(db);
 		PurchaseRequestController purchaseRequestController = new PurchaseRequestController(db);
+		CartController cartController = new CartController(db);
+		OrderController orderController = new OrderController(db);
 	}
 
 	public Connection connect() {

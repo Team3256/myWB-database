@@ -257,5 +257,79 @@ public class Migration {
         } catch (SQLException e) {
             System.out.println(e.getLocalizedMessage());
         }
+        // CART Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'cart');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE CART ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"cart\" (\n" +
+                            "     \"product_id\" text,\n" +
+                            "     \"user_id\" text,\n" +
+                            "     \"product_name\" text,\n" +
+                            "     \"size\" text,\n" +
+                            "     \"variant\" text,\n" +
+                            "     \"quantity\" integer,\n" +
+                            "     \"price\" integer \n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED CART TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        // ORDER_ITEM Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'order_item');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE ORDER_ITEM ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"order_item\" (\n" +
+                            "     \"product_id\" text,\n" +
+                            "     \"order_id\" text,\n" +
+                            "     \"product_name\" text,\n" +
+                            "     \"size\" text,\n" +
+                            "     \"variant\" text,\n" +
+                            "     \"quantity\" integer,\n" +
+                            "     \"price\" integer \n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED ORDER_ITEM TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        // ORDER Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'order');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE ORDER ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"order\" (\n" +
+                            "     \"order_id\" text,\n" +
+                            "     \"user_id\" text,\n" +
+                            "     \"payment_complete\" bool\n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED ORDER TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
     }
 }
