@@ -23,6 +23,7 @@ public class PostController {
         this.db = db;
         getAllPosts();
         createPost();
+        createDevPost();
     }
 
     private void getAllPosts() {
@@ -87,8 +88,55 @@ public class PostController {
                         ")";
                 db.createStatement().executeUpdate(sql);
             }
-            db.commit();
             FirebaseMessaging.getInstance().send(Message.builder().setTopic("ALL_DEVICES").setNotification(Notification.builder().setTitle("New Announcement!").setBody(post.getTitle()).build()).build());
+            db.commit();
+            System.out.println("Inserted records into the table...");
+            res.type("application/json");
+            res.body(post.toString());
+            return res;
+        });
+    }
+
+    private void createDevPost() {
+        post("/api/posts/dev", (req, res) -> {
+            Post post = gson.fromJson(req.body(), Post.class);
+            post.tags.add("DEV");
+            System.out.println("PARSED POST: " + post);
+            if (post.toString().contains("null")) {
+                res.status(400);
+                res.type("application/json");
+                res.body("{\"message\": \"Request missing or contains null values\"}");
+                return res;
+            }
+            String existsSql = "SELECT COUNT(1) FROM \"post\" WHERE id = '" + post.getId() + "'";
+            ResultSet rs = db.createStatement().executeQuery(existsSql);
+            while (rs.next()) {
+                if (rs.getInt("count") == 1) {
+                    res.status(409);
+                    res.type("application/json");
+                    res.body("{\"message\": \"Post already exists with id: " + post.getId() + "\"}");
+                    return res;
+                }
+            }
+            String sql = "INSERT INTO \"post\" VALUES " +
+                    "(" +
+                    "'" + post.getId() + "'," +
+                    "'" + post.getAuthorID() + "'," +
+                    "'" + post.getTitle().replace("'", "''") + "'," +
+                    "'" + post.getDate().replace("'", "''") + "'," +
+                    "'" + post.getBody() + "'" +
+                    ")";
+            db.createStatement().executeUpdate(sql);
+            for (String tag : post.tags) {
+                sql = "INSERT INTO \"post_tag\" VALUES " +
+                        "(" +
+                        "'" + post.getId() + "'," +
+                        "'" + tag + "'" +
+                        ")";
+                db.createStatement().executeUpdate(sql);
+            }
+            FirebaseMessaging.getInstance().send(Message.builder().setTopic("DEV").setNotification(Notification.builder().setTitle("New Announcement!").setBody(post.getTitle()).build()).build());
+            db.commit();
             System.out.println("Inserted records into the table...");
             res.type("application/json");
             res.body(post.toString());
