@@ -331,5 +331,244 @@ public class Migration {
         } catch (SQLException e) {
             System.out.println(e.getLocalizedMessage());
         }
+        // REGIONAL Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'regional');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE REGIONAL ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"regional\" (\n" +
+                            "     \"id\" text,\n" +
+                            "     \"city\" text,\n" +
+                            "     \"country\" text,\n" +
+                            "     \"start_date\" date,\n" +
+                            "     \"end_date\" date,\n" +
+                            "     \"year\" integer,\n" +
+                            "     \"short_name\" text,\n" +
+                            "     \"name\" text,\n" +
+                            "     \"event_code\" text\n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED REGIONAL TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        // TEAM Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'team');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE TEAM ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"team\" (\n" +
+                            "     \"id\" text,\n" +
+                            "     \"nickname\" text,\n" +
+                            "     \"name\" text\n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED TEAM TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        // REGIONAL_TEAM Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'regional_team');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE REGIONAL_TEAM ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"regional_team\" (\n" +
+                            "     \"regional_id\" text,\n" +
+                            "     \"team_id\" text\n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED REGIONAL_TEAM TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        // MATCH Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'match');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE MATCH ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"match\" (\n" +
+                            "     \"id\" text,\n" +
+                            "     \"regional_id\" text,\n" +
+                            "     \"match_num\" integer\n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED MATCH TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        // MATCH_TEAM Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'match_team');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE MATCH_TEAM ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"match_team\" (\n" +
+                            "     \"match_id\" text,\n" +
+                            "     \"team_id\" text,\n" +
+                            "     \"scouter_id\" text,\n" +
+                            "     \"preload\" integer,\n" +
+                            "     \"level\" boolean,\n" +
+                            "     \"park\" boolean\n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED MATCH TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        // AUTO Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'auto');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE AUTO ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"auto\" (\n" +
+                            "     \"match_id\" text,\n" +
+                            "     \"team_id\" text,\n" +
+                            "     \"start_position\" text,\n" +
+                            "     \"crossed\" boolean,\n" +
+                            "     \"cross_time\" double precision,\n" +
+                            "     \"trench\" boolean\n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED AUTO TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        // POWER_CELL Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'power_cell');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE POWER_CELL ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"power_cell\" (\n" +
+                            "     \"match_id\" text,\n" +
+                            "     \"team_id\" text,\n" +
+                            "     \"drop_location\" text,\n" +
+                            "     \"pickup_time\" double precision,\n" +
+                            "     \"cycle_time\" double precision\n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED POWER_CELL TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        // SPIN Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'spin');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE SPIN ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"spin\" (\n" +
+                            "     \"match_id\" text,\n" +
+                            "     \"team_id\" text,\n" +
+                            "     \"rotation\" boolean,\n" +
+                            "     \"rotation_time\" double precision ,\n" +
+                            "     \"position\" boolean,\n" +
+                            "     \"position_time\" double precision \n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED SPIN TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        // CLIMB Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'climb');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE CLIMB ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"climb\" (\n" +
+                            "     \"match_id\" text,\n" +
+                            "     \"team_id\" text,\n" +
+                            "     \"start_time\" double precision ,\n" +
+                            "     \"climb_time\" double precision ,\n" +
+                            "     \"dropped\" boolean\n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED CLIMB TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        // DISCONNECT Table
+        try {
+            String sql = "SELECT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'disconnect');";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getBoolean("exists")) {
+                    System.out.println("TABLE DISCONNECT ALREADY EXISTS!");
+                }
+                else {
+                    sql = "CREATE TABLE \"disconnect\" (\n" +
+                            "     \"match_id\" text,\n" +
+                            "     \"team_id\" text,\n" +
+                            "     \"start_time\" double precision ,\n" +
+                            "     \"duration\" double precision\n" +
+                            ");";
+                    db.createStatement().execute(sql);
+                    System.out.println("CREATED DISCONNECT TABLE");
+                    db.commit();
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
     }
 }

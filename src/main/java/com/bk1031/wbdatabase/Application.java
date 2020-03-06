@@ -135,6 +135,8 @@ public class Application {
 		PurchaseRequestController purchaseRequestController = new PurchaseRequestController(db);
 		CartController cartController = new CartController(db);
 		OrderController orderController = new OrderController(db);
+		RegionalController regionalController = new RegionalController(db);
+		MatchController matchController = new MatchController(db);
 	}
 
 	public Connection connect() {
