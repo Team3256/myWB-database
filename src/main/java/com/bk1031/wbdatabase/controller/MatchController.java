@@ -1,11 +1,11 @@
 package com.bk1031.wbdatabase.controller;
 
-import com.bk1031.wbdatabase.model.Match;
-import com.bk1031.wbdatabase.model.Regional;
+import com.bk1031.wbdatabase.model.*;
 import com.google.gson.Gson;
 import static spark.Spark.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  * User: bharat
@@ -21,6 +21,104 @@ public class MatchController {
     public MatchController(Connection db) {
         this.db = db;
         createMatch();
+        getMatchesFromRegional();
+        getMatchesFromTeam();
+    }
+
+    private void getMatchesFromRegional() {
+        get("/api/scouting/regionals/:id/matches", (req, res) -> {
+            ArrayList<Match> returnList = new ArrayList<>();
+            res.type("application/json");
+            res.body(returnList.toString());
+            return res;
+        });
+    }
+
+    private void getMatchesFromTeam() {
+        get("/api/scouting/teams/:id/matches", (req, res) -> {
+            ArrayList<MatchData> returnList = new ArrayList<>();
+            String sql = "SELECT * FROM \"match_team\" WHERE team_id='" + req.params(":id") + "'";
+            ResultSet rs = db.createStatement().executeQuery(sql);
+            while (rs.next()) {
+                MatchData matchData = new MatchData();
+                matchData.setMatchID(rs.getString("match_id"));
+                matchData.setTeamID(rs.getString("team_id"));
+                matchData.setScouterID(rs.getString("scouter_id"));
+                matchData.setAlliance(rs.getString("alliance"));
+                matchData.setPreload(rs.getInt("preload"));
+                matchData.setLevel(rs.getBoolean("level"));
+                matchData.setPark(rs.getBoolean("park"));
+
+                matchData.setAuto(new Auto());
+                matchData.setSpin(new Spin());
+
+                sql = "SELECT * FROM \"auto\" WHERE match_id='" + matchData.getMatchID() + "' AND team_id='" + matchData.getTeamID() + "'";
+                ResultSet rs2 = db.createStatement().executeQuery(sql);
+                while (rs2.next()) {
+                    Auto auto = new Auto();
+                    auto.setMatchID(matchData.getMatchID());
+                    auto.setTeamID(matchData.getTeamID());
+                    auto.setStartPosition(rs2.getString("start_position"));
+                    auto.setCrossed(rs2.getBoolean("crossed"));
+                    auto.setCrossTime(rs2.getDouble("cross_time"));
+                    auto.setTrench(rs2.getBoolean("trench"));
+                    matchData.setAuto(auto);
+                }
+
+                sql = "SELECT * FROM \"spin\" WHERE match_id='" + matchData.getMatchID() + "' AND team_id='" + matchData.getTeamID() + "'";
+                ResultSet rs3 = db.createStatement().executeQuery(sql);
+                while (rs3.next()) {
+                    Spin spin = new Spin();
+                    spin.setMatchID(matchData.getMatchID());
+                    spin.setTeamID(matchData.getTeamID());
+                    spin.setRotationTime(rs3.getDouble("rotation_time"));
+                    spin.setRotation(rs3.getBoolean("rotation"));
+                    spin.setPositionTime(rs3.getDouble("position_time"));
+                    spin.setPosition(rs3.getBoolean("position"));
+                    matchData.setSpin(spin);
+                }
+
+                sql = "SELECT * FROM \"power_cell\" WHERE match_id='" + matchData.getMatchID() + "' AND team_id='" + matchData.getTeamID() + "'";
+                ResultSet rs4 = db.createStatement().executeQuery(sql);
+                while (rs4.next()) {
+                    PowerCell power = new PowerCell();
+                    power.setMatchID(matchData.getMatchID());
+                    power.setTeamID(matchData.getTeamID());
+                    power.setDropLocation(rs4.getString("drop_location"));
+                    power.setPickupTime(rs4.getDouble("pickup_time"));
+                    power.setCycleTime(rs4.getDouble("cycle_time"));
+                    matchData.powercells.add(power);
+                }
+
+                sql = "SELECT * FROM \"climb\" WHERE match_id='" + matchData.getMatchID() + "' AND team_id='" + matchData.getTeamID() + "'";
+                ResultSet rs5 = db.createStatement().executeQuery(sql);
+                while (rs5.next()) {
+                    Climb climb = new Climb();
+                    climb.setMatchID(matchData.getMatchID());
+                    climb.setTeamID(matchData.getTeamID());
+                    climb.setStartTime(rs5.getDouble("start_time"));
+                    climb.setClimbTime(rs5.getDouble("climb_time"));
+                    climb.setDropped(rs5.getBoolean("dropped"));
+                    matchData.climbs.add(climb);
+                }
+
+                sql = "SELECT * FROM \"disconnect\" WHERE match_id='" + matchData.getMatchID() + "' AND team_id='" + matchData.getTeamID() + "'";
+                ResultSet rs6 = db.createStatement().executeQuery(sql);
+                while (rs6.next()) {
+                    Disconnect dc = new Disconnect();
+                    dc.setMatchID(matchData.getMatchID());
+                    dc.setTeamID(matchData.getTeamID());
+                    dc.setStartTime(rs6.getDouble("start_time"));
+                    dc.setDuration(rs6.getDouble("duration"));
+                    matchData.disconnects.add(dc);
+                }
+                System.out.println(matchData);
+                returnList.add(matchData);
+            }
+            res.type("application/json");
+            res.body(returnList.toString());
+            return res;
+        });
     }
 
     private void createMatch() {
