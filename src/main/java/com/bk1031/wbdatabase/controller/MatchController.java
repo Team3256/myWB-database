@@ -56,6 +56,7 @@ public class MatchController {
                     "'" + match.getId() + "'," +
                     "'" + match.getMatchData().getTeamID() + "'," +
                     "'" + match.getMatchData().getScouterID() + "'," +
+                    "'" + match.getMatchData().getAlliance() + "'," +
                     "" + match.getMatchData().getPreload() + "," +
                     "" + match.getMatchData().isLevel() + "," +
                     "" + match.getMatchData().isPark() +

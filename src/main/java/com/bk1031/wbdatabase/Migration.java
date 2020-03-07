@@ -437,6 +437,7 @@ public class Migration {
                             "     \"match_id\" text,\n" +
                             "     \"team_id\" text,\n" +
                             "     \"scouter_id\" text,\n" +
+                            "     \"alliance\" text,\n" +
                             "     \"preload\" integer,\n" +
                             "     \"level\" boolean,\n" +
                             "     \"park\" boolean\n" +
