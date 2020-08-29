@@ -65,7 +65,7 @@ public class Spin {
                 "\"rotationTime\":" + rotationTime + "," +
                 "\"rotation\":" + rotation + "," +
                 "\"positionTime\":" + positionTime + "," +
-                "\"position\":" + position + "," +
+                "\"position\":" + position +
                 "}";
     }
 
