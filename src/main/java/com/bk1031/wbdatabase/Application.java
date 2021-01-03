@@ -1,7 +1,8 @@
 package com.bk1031.wbdatabase;
 
 import com.bk1031.wbdatabase.controller.*;
-import com.bk1031.wbdatabase.model.Post;
+import com.bk1031.wbdatabase.model.StandardResponse;
+import com.bk1031.wbdatabase.model.Token;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -56,21 +57,6 @@ public class Application {
 
 		app.getAllKeys(db);
 
-//		String basePath = new File("").getAbsolutePath();
-//		if (!basePath.endsWith("/wb-database")) {
-//			basePath += "/wb-database";
-//		}
-//		try {
-//			// Initialize object for ScripRunner
-//			ScriptRunner sr = new ScriptRunner(db);
-//			// Give the input file to Reader
-//			Reader reader = new BufferedReader(new FileReader(basePath + Constants.initPath));
-//			// Exctute scrpt
-//			sr.runScript(reader);
-//		} catch (Exception e) {
-//			System.err.println("Failed to Execute " + basePath + Constants.initPath
-//					+ "\nERROR: " + e.getMessage());
-//		}
 		// Handle stupid cors shit
 		options("/*", (request, response) -> {
 			String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
@@ -90,26 +76,28 @@ public class Application {
 			System.out.println("REQUESTED ROUTE: " + request.url() + " [" + request.requestMethod() + "]");
 			System.out.println("REQUEST BODY: " + request.body());
 			System.out.println("REQUEST ORIGIN: " + request.host() + " [" + request.ip() + "]");
-			if (!request.requestMethod().equals("OPTIONS") && !request.requestMethod().equals("GET")) {
-				if (request.headers("Authentication") != null) {
+			if (!request.requestMethod().equals("OPTIONS")) {
+				if (request.headers("Authorization") != null) {
 					boolean authenticated = false;
-					System.out.println(request.headers("Authentication"));
-					String key = request.headers("Authentication").split("Bearer ")[1];
+					System.out.println(request.headers("Authorization"));
+					String key = request.headers("Authorization").split("Basic ")[1];
 					for (int i = 0; i < Constants.apiKeys.size(); i++) {
-						if (Constants.apiKeys.get(i).equals(key)) {
+						if (Constants.apiKeys.get(i).getId().equals(key)) {
 							// Authenticated!
 							authenticated = true;
 							FirebaseDatabase.getInstance().getReference("tokens/" + key).setValueAsync(null);
 						}
 					}
 					if (!authenticated) {
+						StandardResponse res = new StandardResponse("ERROR", new Date(), "Invalid authentication token", null);
 						System.out.println("INVALID AUTHENTICATION!");
-						halt(401, "{\"message\": \"Invalid authentication token\"}");
+						halt(401, res.toString());
 					}
 				}
 				else {
+					StandardResponse res = new StandardResponse("ERROR", new Date(), "Request not authenticated", null);
 					System.out.println("NOT AUTHENTICATED!");
-					halt(401, "{\"message\": \"Request not authorized\"}");
+					halt(401, res.toString());
 				}
 			}
 			response.header("Access-Control-Allow-Origin", "*");
@@ -128,15 +116,7 @@ public class Application {
 			res.body("{\"message\": \"Hello World!\",\"timestamp\": \"" + new Date().toString() + "\"}");
 			return res;
 		});
-		UserController userController = new UserController(db);
-		EventController eventController = new EventController(db);
-		AttendanceController attendanceController = new AttendanceController(db);
-		PostController postController = new PostController(db);
-		PurchaseRequestController purchaseRequestController = new PurchaseRequestController(db);
-		CartController cartController = new CartController(db);
-		OrderController orderController = new OrderController(db);
-		RegionalController regionalController = new RegionalController(db);
-		MatchController matchController = new MatchController(db);
+		UserController userController = new UserController();
 	}
 
 	public Connection connect() {
@@ -159,15 +139,17 @@ public class Application {
 		String sql = "SELECT id FROM \"api_key\"";
 		ResultSet rs = db.createStatement().executeQuery(sql);
 		while(rs.next()) {
-			System.out.println(rs.getString("id"));
-			Constants.apiKeys.add(rs.getString("id"));
+			Token token = new Token(rs.getString("id"), rs.getInt("permission"), rs.getTimestamp("created"));
+			System.out.println(token);
+			Constants.apiKeys.add(token);
 		}
 		rs.close();
 		FirebaseDatabase.getInstance().getReference("tokens").addChildEventListener(new ChildEventListener() {
 			@Override
 			public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-				System.out.println("NEW AUTH TOKEN: " + dataSnapshot.getValue().toString());
-				Constants.apiKeys.add(dataSnapshot.getValue().toString());
+				Token token = new Token(dataSnapshot.getValue().toString(), 10, new Date());
+				System.out.println("NEW AUTH TOKEN: " + token.toString());
+				Constants.apiKeys.add(token);
 			}
 
 			@Override
@@ -175,7 +157,7 @@ public class Application {
 
 			@Override
 			public void onChildRemoved(DataSnapshot dataSnapshot) {
-				Constants.apiKeys.remove(dataSnapshot.getValue().toString());
+				Constants.apiKeys.removeIf(p -> p.getId().equals(dataSnapshot.getValue().toString()));
 			}
 
 			@Override
@@ -184,24 +166,6 @@ public class Application {
 			@Override
 			public void onCancelled(DatabaseError databaseError) {}
 		});
-//		get("/api/keys", (request, response) -> {
-//			Constants.apiKeys.clear();
-//			ResultSet rs2 = db.createStatement().executeQuery(sql);
-//			String returnString = "[";
-//			while(rs2.next()) {
-//				System.out.println(rs2.getString("id"));
-//				Constants.apiKeys.add(rs2.getString("id"));
-//				returnString += "\"" + rs2.getString("id") + "\"";
-//				if (rs2.next()) {
-//					returnString += ",";
-//				}
-//			}
-//			System.out.println(Constants.apiKeys);
-//			returnString += "]";
-//			rs2.close();
-//			response.body(returnString);
-//			return response;
-//		});
 	}
 
 }

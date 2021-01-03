@@ -11,15 +11,13 @@ public class User {
     private String email;
     private String phone;
     private int grade;
-    private String role;
-    private boolean varsity;
+    private String gender;
     private String shirtSize;
     private String jacketSize;
     private String discordID;
     private String discordAuthToken;
 
-    public List<String> subteams = new ArrayList<>();
-    public List<String> perms = new ArrayList<>();
+    public List<String> roles = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -69,20 +67,12 @@ public class User {
         this.grade = grade;
     }
 
-    public String getRole() {
-        return role;
+    public String getGender() {
+        return gender;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public boolean isVarsity() {
-        return varsity;
-    }
-
-    public void setVarsity(boolean varsity) {
-        this.varsity = varsity;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getShirtSize() {
@@ -117,23 +107,11 @@ public class User {
         this.discordAuthToken = discordAuthToken;
     }
 
-    public String getPerms() {
+    public String getRoles() {
         String returnString = "[";
-        for (String perm: perms) {
-            returnString += "\"" + perm + "\"";
-            if (perms.indexOf(perm) < perms.size() - 1) {
-                returnString += ",";
-            }
-        }
-        returnString += "]";
-        return returnString;
-    }
-
-    public String getSubteams() {
-        String returnString = "[";
-        for (String subteam: subteams) {
-            returnString += "\"" + subteam + "\"";
-            if (subteams.indexOf(subteam) < subteams.size() - 1) {
+        for (String role: roles) {
+            returnString += "\"" + role + "\"";
+            if (roles.indexOf(role) < roles.size() - 1) {
                 returnString += ",";
             }
         }
@@ -150,14 +128,12 @@ public class User {
                 "\"email\":\"" + email + "\"," +
                 "\"phone\":\"" + phone + "\"," +
                 "\"grade\":" + grade + "," +
-                "\"role\":\"" + role + "\"," +
-                "\"varsity\":" + varsity + "," +
+                "\"gender\":\"" + gender + "\"," +
                 "\"shirtSize\":\"" + shirtSize + "\"," +
                 "\"jacketSize\":\"" + jacketSize + "\"," +
                 "\"discordID\":\"" + discordID + "\"," +
                 "\"discordAuthToken\":\"" + discordAuthToken + "\"," +
-                "\"perms\":" + getPerms() + "," +
-                "\"subteams\":" + getSubteams() +
+                "\"roles\":" + roles +
                 "}";
     }
 }
